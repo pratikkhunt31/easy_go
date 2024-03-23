@@ -20,10 +20,10 @@ class _OtpScreenState extends State<OtpScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
 
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_sharp
-          ),
+          icon: const Icon(Icons.arrow_back_sharp, color: Colors.black),
           onPressed: () {},
         ),
       ),
@@ -36,8 +36,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 horizontal: 30.0,
               ),
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Align(
                   //   alignment: Alignment.topLeft,
@@ -92,7 +92,8 @@ class _OtpScreenState extends State<OtpScreen> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                           Colors.blue,
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),

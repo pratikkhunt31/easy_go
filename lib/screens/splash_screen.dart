@@ -1,5 +1,5 @@
-import 'package:easy_go/screens/home_screen.dart';
-import 'package:easy_go/screens/num_screen.dart';
+import 'package:easy_go/screens/home/home_screen.dart';
+import 'package:easy_go/screens/login/num_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -10,8 +10,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
+    return  Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0000FF),
+        elevation: 0,
+        // leading: null,
+      ),
+      body: const Center(
         child: Text('HomeScreen'),
       ),
     );

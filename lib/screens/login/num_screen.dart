@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
-import 'package:easy_go/screens/otp_screen.dart';
+import 'package:easy_go/screens/login/login_form.dart';
+import 'package:easy_go/screens/login/otp_screen.dart';
 import 'package:easy_go/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -168,7 +169,7 @@ class _NumberScreenState extends State<NumberScreen> {
                             text: "Login",
                             onPressed: phoneController.text.length.isEqual(0)
                                 ? () {
-                                    Get.to(() => const OtpScreen());
+                                    Get.to(() => const LoginForm());
                                   }
                                 : () {},
                             buttonStyle: ButtonStyle(

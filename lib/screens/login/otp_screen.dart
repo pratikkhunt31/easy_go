@@ -1,13 +1,13 @@
 import 'package:easy_go/screens/home_view.dart';
-import 'package:easy_go/screens/num_screen.dart';
+import 'package:easy_go/screens/login/num_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-import '../widget/custom_button.dart';
+import '../../widget/custom_button.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  const OtpScreen({Key? key}) : super(key: key);
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -16,39 +16,35 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenHeight = screenSize.height;
+    final double screenWidth = screenSize.width;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_sharp, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 25.0,
-                horizontal: 30.0,
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.1, // 10% of screen width as horizontal padding
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Align(
-                  //   alignment: Alignment.topLeft,
-                  //   child: GestureDetector(
-                  //     onTap: () => Get.off(() => const NumberScreen()),
-                  //     child: const Icon(Icons.arrow_back_sharp),
-                  //   ),
-                  // ),
                   SizedBox(
-                    // height: constraints.maxHeight * 0.4,
-                    // width: constraints.maxWidth * 0.8,
+                    height: screenHeight * 0.3, // 30% of screen height for image
                     child: Image.asset(
                       'assets/number.jpg',
                       fit: BoxFit.contain,
@@ -68,13 +64,13 @@ class _OtpScreenState extends State<OtpScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black45,
-                      // fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
                   const Pinput(
                     length: 6,
+
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -83,7 +79,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     child: CustomButton(
                       text: "Login",
                       onPressed: () {
-                        Get.to(() => const HomeView());
+                        Get.offAll(() => const HomeView());
                       },
                       buttonStyle: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(
@@ -92,8 +88,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         backgroundColor: MaterialStateProperty.all<Color>(
                           Colors.blue,
                         ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),

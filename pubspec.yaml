@@ -45,6 +45,9 @@ dependencies:
   country_picker: ^2.0.19
 #  pinput: ^2.2.11
   otp_text_field: ^1.1.3
+  easy_loading_button: ^0.3.2
+  ionicons: ^0.2.2
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:

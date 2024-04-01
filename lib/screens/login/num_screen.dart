@@ -1,9 +1,10 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:easy_go/screens/login/login_form.dart';
 import 'package:easy_go/screens/login/otp_screen.dart';
-import 'package:easy_go/widget/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../widget/custom_widget.dart';
 
 class NumberScreen extends StatefulWidget {
   const NumberScreen({super.key});
@@ -112,37 +113,37 @@ class _NumberScreenState extends State<NumberScreen> {
                                 color: Colors.black26,
                               ),
                             ),
-                            // prefixIcon: Container(
-                            //   padding: const EdgeInsets.only(
-                            //     top: 11.0,
-                            //     left: 8,
-                            //     right: 5,
-                            //   ),
-                            //   child: InkWell(
-                            //     onTap: () {
-                            //       showCountryPicker(
-                            //         context: context,
-                            //         countryListTheme:
-                            //         const CountryListThemeData(
-                            //           bottomSheetHeight: 400,
-                            //         ),
-                            //         onSelect: (value) => {
-                            //           setState(() {
-                            //             selectedCountry = value;
-                            //           })
-                            //         },
-                            //       );
-                            //     },
-                            //     child: Text(
-                            //       "${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}",
-                            //       style: const TextStyle(
-                            //         fontSize: 18,
-                            //         color: Colors.black,
-                            //         fontWeight: FontWeight.bold,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
+                            prefixIcon: Container(
+                              padding: const EdgeInsets.only(
+                                top: 11.0,
+                                left: 8,
+                                right: 5,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  showCountryPicker(
+                                    context: context,
+                                    countryListTheme:
+                                    const CountryListThemeData(
+                                      bottomSheetHeight: 400,
+                                    ),
+                                    onSelect: (value) => {
+                                      setState(() {
+                                        selectedCountry = value;
+                                      })
+                                    },
+                                  );
+                                },
+                                child: Text(
+                                  "${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                             suffixIcon: phoneController.text.length.isEqual(0)
                                 ? Container(
                                     height: 30,
@@ -166,31 +167,14 @@ class _NumberScreenState extends State<NumberScreen> {
                           width: double.infinity,
                           height: 50,
                           child: CustomButton(
-                            text: "Login",
-                            onPressed: phoneController.text.length.isEqual(0)
+                            hint: "Login",
+                            color: const Color(0xFF0000FF),
+                            borderRadius: BorderRadius.circular(25.0),
+                            onPress: phoneController.text.length.isEqual(0)
                                 ? () {
                                     Get.to(() => const LoginForm());
                                   }
                                 : () {},
-                            buttonStyle: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                Colors.white,
-                              ),
-                              backgroundColor:
-                                  phoneController.text.length.isEqual(10)
-                                      ? MaterialStateProperty.all<Color>(
-                                          Colors.blue,
-                                        )
-                                      : MaterialStateProperty.all<Color>(
-                                          Colors.grey,
-                                        ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                              ),
-                            ),
                           ),
                         ),
                       ],

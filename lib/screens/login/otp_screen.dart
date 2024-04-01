@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-import '../../widget/custom_button.dart';
+import '../../widget/custom_widget.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({Key? key}) : super(key: key);
@@ -70,30 +70,18 @@ class _OtpScreenState extends State<OtpScreen> {
                   const SizedBox(height: 20),
                   const Pinput(
                     length: 6,
-
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: CustomButton(
-                      text: "Login",
-                      onPressed: () {
-                        Get.offAll(() => const HomeView());
+                      hint: "Login",
+                      color: const Color(0xFF0000FF),
+                      borderRadius: BorderRadius.circular(25.0),
+                      onPress: () {
+                        Get.off(() => const HomeView());
                       },
-                      buttonStyle: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(
-                          Colors.white,
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          Colors.blue,
-                        ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],

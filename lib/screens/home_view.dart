@@ -2,9 +2,11 @@ import 'package:easy_go/screens/home/home_screen.dart';
 import 'package:easy_go/screens/login/login_screen.dart';
 import 'package:easy_go/screens/login/otp_screen.dart';
 import 'package:easy_go/screens/profile/profile_screen.dart';
+import 'package:easy_go/screens/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'booking/bookings.dart';
 import 'login/num_screen.dart';
 
 class HomeView extends StatefulWidget {
@@ -32,8 +34,8 @@ class _HomeViewState extends State<HomeView> {
 
   var navBody = [
     const HomeScreen(),
-    const LoginScreen(),
-    const NumberScreen(),
+    const Bookings(),
+    const Wallet(),
     const ProfileScreen(),
   ];
 

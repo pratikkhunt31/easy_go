@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "36658870889",
+    "project_id": "easy-go-aacd0",
+    "storage_bucket": "easy-go-aacd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36658870889:android:ce0295605d4d84b8c740f8",
+        "android_client_info": {
+          "package_name": "com.example.easy_go"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ0NjNCu-wy3zevyKh2uOSrndRFHrxsN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -92,13 +92,13 @@ class _NumberScreenState extends State<NumberScreen> {
                             });
                           },
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                           ),
                           decoration: InputDecoration(
                             hintText: "Enter Phone Number",
                             hintStyle: TextStyle(
                               fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.grey.shade600,
                             ),
                             enabledBorder: OutlineInputBorder(
@@ -115,7 +115,7 @@ class _NumberScreenState extends State<NumberScreen> {
                             ),
                             prefixIcon: Container(
                               padding: const EdgeInsets.only(
-                                top: 11.0,
+                                top: 13.0,
                                 left: 8,
                                 right: 5,
                               ),
@@ -137,7 +137,7 @@ class _NumberScreenState extends State<NumberScreen> {
                                 child: Text(
                                   "${selectedCountry.flagEmoji} +${selectedCountry.phoneCode}",
                                   style: const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -146,8 +146,8 @@ class _NumberScreenState extends State<NumberScreen> {
                             ),
                             suffixIcon: phoneController.text.length.isEqual(0)
                                 ? Container(
-                                    height: 30,
-                                    width: 30,
+                                    height: 28,
+                                    width: 28,
                                     margin: const EdgeInsets.all(10.0),
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,

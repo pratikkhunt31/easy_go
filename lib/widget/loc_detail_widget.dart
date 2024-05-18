@@ -54,7 +54,7 @@ class LocationButton extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          onPress;
+          onPress();
         },
         child: Container(
           decoration: BoxDecoration(

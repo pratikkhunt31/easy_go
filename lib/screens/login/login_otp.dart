@@ -1,31 +1,30 @@
 import 'package:easy_go/controller/auth_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_go/screens/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../widget/custom_widget.dart';
 
-class OtpScreen extends StatefulWidget {
+class LoginOtp extends StatefulWidget {
   final String phoneNumber;
-  final String? name;
-  final String? email;
+  // final String? name;
+  // final String? email;
 
-  const OtpScreen(this.phoneNumber, this.name, this.email, {Key? key})
+  const LoginOtp(this.phoneNumber, {Key? key})
       : super(key: key);
 
   @override
-  State<OtpScreen> createState() => _OtpScreenState();
+  State<LoginOtp> createState() => _LoginOtpState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _LoginOtpState extends State<LoginOtp> {
   String? otpCode;
   TextEditingController otpController = TextEditingController();
   AuthController authController = Get.put(AuthController());
-  User? user = FirebaseAuth.instance.currentUser;
 
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
     authController.phoneAuth(widget.phoneNumber);
@@ -33,7 +32,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    print(widget.phoneNumber);
     final Size screenSize = MediaQuery.of(context).size;
     final double screenHeight = screenSize.height;
     final double screenWidth = screenSize.width;
@@ -130,25 +129,20 @@ class _OtpScreenState extends State<OtpScreen> {
                       borderRadius: BorderRadius.circular(25.0),
                       onPress: otpCode.toString().length.isEqual(6)
                           ? () async {
-                              try {
-                                await authController.verifyOtp(otpCode!);
-                                await authController.saveUserInfo(widget.name!, widget.email!, widget.phoneNumber);
-                                print(widget.name!);
-                                print(widget.email!);
-                                print(widget.phoneNumber);
-                                // if (user != null) {
-                                  // Update user profile with display name
-                                // user!.updateDisplayName(widget.name!);
-                                // }
-                                // authController.successSnackBar(
-                                //     "OTP verified successfully");
-                                // Get.off(() =>  HomeView());
-                              } catch (e) {
-
-                                // If verification fails, show error message
-                                errorSnackBar("Error verifying OTP", e);
-                              }
-                            }
+                        // showProgressDialog(context);
+                        try {
+                          await authController.verifyOtp(otpCode!);
+                          // await authController.saveUserInfo(widget.name!, widget.email!, widget.phoneNumber);
+                          // hideProgressDialog(context);
+                         successSnackBar(
+                              "OTP verified successfully");
+                          Get.offAll(() =>  HomeView());
+                        } catch (e) {
+                          // hideProgressDialog(context);
+                          // If verification fails, show error message
+                          errorSnackBar("Error verifying OTP", e);
+                        }
+                      }
                           : () {},
                     ),
                   ),

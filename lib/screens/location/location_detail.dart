@@ -1,9 +1,14 @@
+import 'package:easy_go/consts/firebase_consts.dart';
+import 'package:easy_go/screens/location/map_screen.dart';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../assistants/assistantsMethod.dart';
 import '../../widget/loc_detail_widget.dart';
 
 class LocationDetail extends StatefulWidget {
@@ -19,6 +24,71 @@ class _LocationDetailState extends State<LocationDetail> {
   // final GlobalKey<ExpansionTileCardState> cardA = GlobalKey();
   // final GlobalKey<ExpansionTileCardState> cardB = GlobalKey();
   TextEditingController nameController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
+  TextEditingController locController = TextEditingController();
+
+  bool isChecked = false;
+  bool isFetchingLocation = false;
+  GoogleMapController? newMapController;
+  Position? currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    // Call the method to check and request location permissions
+    checkLocationPermission();
+  }
+
+  void checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      // Request location permissions if not granted or permanently denied
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        // Handle the case where the user denies or permanently denies permission
+        validSnackBar('User denied or permanently denied location permission');
+      } else {
+        locatePosition();
+      }
+    } else {
+      locatePosition();
+    }
+  }
+
+  Future<void> locatePosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        currentLocation = position;
+      });
+
+      LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+
+      CameraPosition cameraPosition = CameraPosition(
+        target: latLngPosition,
+        zoom: 18,
+      );
+
+      await newMapController?.animateCamera(
+        CameraUpdate.newCameraPosition(cameraPosition),
+      );
+
+      String address = await AssistantsMethod.searchCoordinateAddress(position);
+      print("This is your address: " + address);
+      setState(() {
+        locController.text = address;
+      });
+    } catch (e) {
+      // Handle any errors that occur during location fetching
+      validSnackBar('Error fetching location: $e');
+      throw e; // Re-throw the error to propagate it further if needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +140,7 @@ class _LocationDetailState extends State<LocationDetail> {
                     width: double.infinity,
                     child: DetailWidget(
                       labelText: "Location",
-                      controller: nameController,
+                      controller: locController,
                       icon: Icons.location_on_sharp,
                     ),
                   ),
@@ -84,13 +154,32 @@ class _LocationDetailState extends State<LocationDetail> {
                       LocationButton(
                         label: "Use Current Location",
                         icon: Icons.my_location,
-                        onPress: () {},
+                        onPress: () async {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return ProgressDialog(
+                                  message: "Fetching location detail");
+                            },
+                          );
+                          try {
+                            await locatePosition();
+                          } catch (e) {
+                            // Handle any errors that occur while fetching the location
+                            validSnackBar('Error fetching location: $e');
+                          } finally {
+                            Navigator.pop(context); // Close the progress dialog
+                          }
+                        },
                       ),
                       const SizedBox(width: 7),
                       LocationButton(
                         label: "Locate On The Map",
                         icon: Icons.map_sharp,
-                        onPress: () {},
+                        onPress: () {
+                          Get.to(() => MapScreen());
+                        },
                       ),
                     ],
                   ),
@@ -119,16 +208,29 @@ class _LocationDetailState extends State<LocationDetail> {
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Mobile Number",
-                        controller: nameController,
+                        controller: numberController,
                         icon: Icons.call,
                       ),
                       // Add some vertical spacing between fields and checkbox
                       Row(
                         children: [
                           Checkbox(
-                            value: false, // Set initial value of checkbox
+                            value: isChecked,
                             onChanged: (bool? newValue) {
-                              // Handle checkbox value change
+                              setState(() {
+                                isChecked = newValue ??
+                                    false; // Update the checkbox state
+                                if (isChecked) {
+                                  // Set the value of nameController to the current user's name
+                                  nameController.text =
+                                      currentUser!.phoneNumber ??
+                                          ''; // Ensure null safety
+                                } else {
+                                  // Optionally, reset the value of nameController when checkbox is unchecked
+                                  nameController.text =
+                                      ''; // Set to empty string or any desired default value
+                                }
+                              });
                             },
                           ),
                           const Text(
@@ -268,6 +370,13 @@ class _LocationDetailState extends State<LocationDetail> {
               ],
             ),
           ),
+          CustomButton(
+            hint: "hint",
+            onPress: () {
+              print(currentUser);
+            },
+            borderRadius: BorderRadius.circular(10),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
             child: CustomButton(
@@ -371,7 +480,8 @@ class _LocationDetailState extends State<LocationDetail> {
                                                   ),
                                                 ),
                                                 const SizedBox(height: 15),
-                                                const Text("Waiting for Driver Acceptance")
+                                                const Text(
+                                                    "Waiting for Driver Acceptance")
                                               ],
                                             ),
                                           ),

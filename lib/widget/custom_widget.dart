@@ -1,5 +1,8 @@
+import 'package:easy_go/screens/login/num_screen.dart';
 import 'package:easy_loading_button/easy_loading_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class CustomButton extends StatelessWidget {
@@ -9,41 +12,151 @@ class CustomButton extends StatelessWidget {
   final BorderRadius borderRadius;
 
   const CustomButton(
-      {super.key, required this.hint, required this.onPress, this.color, required this.borderRadius});
+      {super.key,
+      required this.hint,
+      required this.onPress,
+      this.color,
+      required this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: EasyButton(
-          type: EasyButtonType.elevated,
-          idleStateWidget: Text(
-            hint!,
-            style: const TextStyle(fontSize: 18),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final buttonWidth =
+            constraints.maxWidth * 0.8; // Adjust the width as needed
+        const buttonHeight =
+            50.0; // You can adjust the height according to your preference
+        const fontSize =
+            buttonHeight * 0.38; // Adjust font size relative to button height
+
+        return SizedBox(
+          height: buttonHeight,
+          width: buttonWidth,
+          child: ClipRRect(
+            borderRadius: borderRadius,
+            child: EasyButton(
+              type: EasyButtonType.elevated,
+              onPressed: onPress as void Function()?,
+              buttonColor: const Color(0xFF0000FF),
+              idleStateWidget: Text(
+                hint!,
+                style: const TextStyle(
+                  fontSize: fontSize,
+                ),
+              ),
+              loadingStateWidget: const CircularProgressIndicator(
+                strokeWidth: 2.5,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white,
+                ),
+              ),
+              useWidthAnimation: false,
+              useEqualLoadingStateWidgetDimension: true,
+              // width: 150,
+              height: 45,
+              elevation: 0.0,
+              contentGap: 5.1,
+            ),
           ),
-          loadingStateWidget: const CircularProgressIndicator(),
-          useWidthAnimation: false,
-          useEqualLoadingStateWidgetDimension: true,
-          width: 100,
-          height: 40,
-          elevation: 0.0,
-          contentGap: 8.0,
-          buttonColor: color!,
-          onPressed: onPress,
+        );
+      },
+    );
+  }
+}
+
+class VehicleCard extends StatelessWidget {
+  final String vName;
+  final String image;
+  final double height;
+  final Function() onPress;
+
+  VehicleCard({
+    super.key,
+    required this.vName,
+    required this.image,
+    required this.onPress, required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onPress,
+        child: Material(
+          elevation: 5,
+          borderRadius: BorderRadius.circular(8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 130,
+                    child: Center(
+                      child: SvgPicture.asset(
+                        image,
+                        height: height,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          vName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Get.to(() => const LocationDetail());
+                          onPress();
+                        },
+                        icon: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18,
+                        ),
+                      )
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+                    child: Text(
+                      'Book for your delivery',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-TextFormField buildTextFormField(
-    TextEditingController nameController, String fieldName, IconData icon,
-    {IconData? sufIcon}) {
+TextFormField buildTextFormField(String fieldName, IconData icon,
+    {TextEditingController? controller,
+    IconData? sufIcon,
+    bool? read = false,
+    String? hint}) {
   return TextFormField(
-    controller: nameController,
+    initialValue: hint,
+    controller: controller,
     cursorColor: Colors.black,
+    readOnly: read != true ? false : true,
     decoration: InputDecoration(
       labelText: fieldName,
       labelStyle: const TextStyle(color: Colors.black),
@@ -58,7 +171,9 @@ TextFormField buildTextFormField(
       suffixIcon: sufIcon != null
           ? IconButton(
               icon: Icon(sufIcon),
-              onPressed: () {},
+              onPressed: () {
+                Get.off(const NumberScreen());
+              },
             )
           : null,
     ),
@@ -187,4 +302,90 @@ class EditItem extends StatelessWidget {
       ],
     );
   }
+}
+
+class ProgressDialog extends StatelessWidget {
+  final String message;
+
+  ProgressDialog({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      // backgroundColor: Colors.black,
+      elevation: 0.0,
+      child: Container(
+        margin: const EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              const SizedBox(width: 6),
+              const CircularProgressIndicator(
+                strokeWidth: 2.5,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0000FF)),
+              ),
+              const SizedBox(width: 15),
+              Text(
+                message,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+successSnackBar(String message) {
+  Get.snackbar(
+    "Successfully Logged in",
+    message,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: const Color(0xFF2EC492),
+    colorText: Colors.white,
+    borderRadius: 10,
+    margin: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+  );
+}
+
+errorSnackBar(String message, _) {
+  Get.snackbar(
+    "Error",
+    "$message\n${_.message}",
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: const Color(0xFFD05045),
+    colorText: Colors.white,
+    borderRadius: 10,
+    margin: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+  );
+}
+
+validSnackBar(String message) {
+  Get.snackbar(
+    "Error",
+    message,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: const Color(0xFFD05045),
+    colorText: Colors.white,
+    borderRadius: 10,
+    margin: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+  );
+}
+
+otpSnackBar(String message) {
+  Get.snackbar(
+    "Verification",
+    message,
+    snackPosition: SnackPosition.TOP,
+    backgroundColor: const Color(0xFF2EC492),
+    colorText: Colors.white,
+    borderRadius: 10,
+    margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+  );
 }

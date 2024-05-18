@@ -1,20 +1,20 @@
+
 import 'package:easy_go/screens/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
+import '../../controller/auth_controller.dart';
 import '../../widget/custom_widget.dart';
+import '../login/num_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  @override
   Widget build(BuildContext context) {
+    AuthController authController = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -121,10 +121,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SettingItem(
               title: "Help",
               icon: Ionicons.help,
+              bgColor: Colors.green.shade100,
+              iconColor: Colors.green,
+              onTap: () {
+                // print(currentUser!);
+              },
+            ),
+            const SizedBox(height: 20),
+            SettingItem(
+              title: "LogOut",
+              icon: Ionicons.log_out_sharp,
               bgColor: Colors.red.shade100,
               iconColor: Colors.red,
-              onTap: () {},
+              onTap: () async {
+                try {
+                  print("logout");
+                  await authController.logout();
+                  Get.offAll(() => NumberScreen());
+                } catch(e) {
+                  print(e);
+                }
+              },
+
             ),
+
           ],
         ),
       ),

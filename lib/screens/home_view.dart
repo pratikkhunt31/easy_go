@@ -1,60 +1,48 @@
 import 'package:easy_go/screens/home/home_screen.dart';
-import 'package:easy_go/screens/login/login_screen.dart';
-import 'package:easy_go/screens/login/otp_screen.dart';
 import 'package:easy_go/screens/profile/profile_screen.dart';
 import 'package:easy_go/screens/wallet/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controller/home_controller.dart';
 import 'booking/bookings.dart';
-import 'login/num_screen.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  var currentNavIndex = 0.obs;
-
-  var navbarItem = [
-    const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-    const BottomNavigationBarItem(icon: Icon(Icons.history), label: "Bookings"),
-    const BottomNavigationBarItem(
-        icon: Icon(Icons.account_balance_wallet_sharp), label: "Wallet"),
-    const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-    // const BottomNavigationBarItem(
-    //     icon: Icon(Icons.delete_outline), label: "Dustbin"),
-    // const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Watchman"),
-    // const BottomNavigationBarItem(
-    //     icon: Icon(Icons.water_drop_sharp), label: "Diesel"),
-  ];
-
-  var navBody = [
-    const HomeScreen(),
-    const Bookings(),
-    const Wallet(),
-    const ProfileScreen(),
-  ];
+class HomeView extends StatelessWidget {
+  HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(HomeController());
+
+    var navbarItem = [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+      BottomNavigationBarItem(icon: Icon(Icons.history), label: "Bookings"),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.account_balance_wallet_sharp), label: "Wallet"),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+    ];
+
+    var navBody = [
+      HomeScreen(),
+      Bookings(),
+      Wallet(),
+      ProfileScreen(),
+    ];
+
     return Scaffold(
       body: Column(
         children: [
           Obx(
             () => Expanded(
-              child: navBody.elementAt(currentNavIndex.value),
+              child: navBody.elementAt(controller.currentNavIndex.value),
             ),
           ),
         ],
       ),
       bottomNavigationBar: Obx(
-        ()=> BottomNavigationBar(
+        () => BottomNavigationBar(
           // elevation: 0.5,
-          currentIndex: currentNavIndex.value,
+          currentIndex: controller.currentNavIndex.value,
           selectedItemColor: Colors.black87,
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(fontFamily: "sans_semibold"),
@@ -62,7 +50,7 @@ class _HomeViewState extends State<HomeView> {
           backgroundColor: Colors.white,
           items: navbarItem,
           onTap: (value) {
-            currentNavIndex.value = value;
+            controller.currentNavIndex.value = value;
           },
         ),
       ),

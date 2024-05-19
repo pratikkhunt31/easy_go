@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/home_controller.dart';
+import '../widget/custom_widget.dart';
 import 'booking/bookings.dart';
 
 class HomeView extends StatelessWidget {
@@ -29,29 +30,35 @@ class HomeView extends StatelessWidget {
       ProfileScreen(),
     ];
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Obx(
-            () => Expanded(
-              child: navBody.elementAt(controller.currentNavIndex.value),
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(context: context, builder: (context) => exitDialog(context));
+        return false;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Obx(
+              () => Expanded(
+                child: navBody.elementAt(controller.currentNavIndex.value),
+              ),
             ),
+          ],
+        ),
+        bottomNavigationBar: Obx(
+          () => BottomNavigationBar(
+            // elevation: 0.5,
+            currentIndex: controller.currentNavIndex.value,
+            selectedItemColor: Colors.black87,
+            unselectedItemColor: Colors.grey,
+            selectedLabelStyle: const TextStyle(fontFamily: "sans_semibold"),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            items: navbarItem,
+            onTap: (value) {
+              controller.currentNavIndex.value = value;
+            },
           ),
-        ],
-      ),
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          // elevation: 0.5,
-          currentIndex: controller.currentNavIndex.value,
-          selectedItemColor: Colors.black87,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(fontFamily: "sans_semibold"),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          items: navbarItem,
-          onTap: (value) {
-            controller.currentNavIndex.value = value;
-          },
         ),
       ),
     );

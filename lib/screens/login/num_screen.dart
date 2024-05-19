@@ -51,8 +51,6 @@ class _NumberScreenState extends State<NumberScreen> {
   @override
   Widget build(BuildContext context) {
     phoneController.selection = TextSelection.fromPosition(
-
-
         TextPosition(offset: phoneController.text.length));
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -166,19 +164,19 @@ class _NumberScreenState extends State<NumberScreen> {
                           ),
                           suffixIcon: phoneController.text.length.isEqual(10)
                               ? Container(
-                                  height: 28,
-                                  width: 28,
-                                  margin: const EdgeInsets.all(10.0),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.green,
-                                  ),
-                                  child: const Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                )
+                            height: 28,
+                            width: 28,
+                            margin: const EdgeInsets.all(10.0),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.green,
+                            ),
+                            child: const Icon(
+                              Icons.done,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          )
                               : null,
                         ),
                       ),
@@ -194,26 +192,26 @@ class _NumberScreenState extends State<NumberScreen> {
                           borderRadius: BorderRadius.circular(25.0),
                           onPress: phoneController.text.length.isEqual(10)
                               ? () async {
-                                  try {
-                                    await Future.delayed(
-                                        const Duration(seconds: 2));
-                                    // if (!authController.isValidPhoneNumber(
-                                    //     phoneController.text)) {
-                                    //   // Show an error Snack bar if the phone number is invalid
-                                    //   authController.errorSnackBarNew(
-                                    //       "Invalid phone number. Please enter a valid 10-digit number.");
-                                    //   return;
-                                    // }
-                                    // Proceed with login
+                            try {
+                              await Future.delayed(
+                                  const Duration(seconds: 2));
+                              // if (!authController.isValidPhoneNumber(
+                              //     phoneController.text)) {
+                              //   // Show an error Snack bar if the phone number is invalid
+                              //   authController.errorSnackBarNew(
+                              //       "Invalid phone number. Please enter a valid 10-digit number.");
+                              //   return;
+                              // }
+                              // Proceed with login
 
-                                    // print(
-                                    //     "+${selectedCountry.phoneCode + phoneController.text.trim()}");
-                                    _checkUserDataAndNavigate();
-                                  } catch (e) {
-                                    validSnackBar(
-                                        "Error validating phone number: $e");
-                                  }
-                                }
+                              // print(
+                              //     "+${selectedCountry.phoneCode + phoneController.text.trim()}");
+                              _checkUserDataAndNavigate();
+                            } catch (e) {
+                              validSnackBar(
+                                  "Error validating phone number: $e");
+                            }
+                          }
                               : () {},
                         ),
                       ),
@@ -230,7 +228,7 @@ class _NumberScreenState extends State<NumberScreen> {
                             children: const [
                               TextSpan(
                                   text:
-                                      "By creating an account, you agree to our"
+                                  "By creating an account, you agree to our"
                                       " "),
                               TextSpan(
                                 text: "Terms of Service ",

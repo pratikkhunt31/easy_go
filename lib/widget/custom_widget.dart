@@ -1,17 +1,61 @@
 import 'package:easy_go/screens/login/num_screen.dart';
 import 'package:easy_loading_button/easy_loading_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-class CustomButton extends StatelessWidget {
+Widget CustomButton({
+  required String hint,
+  required Function onPress,
+  Color? color,
+  required BorderRadius borderRadius,
+}) {
+
+  const buttonHeight = 50.0; // You can adjust the height according to your preference
+  const fontSize = buttonHeight * 0.38; // Adjust font size relative to button height
+
+  return SizedBox(
+    height: buttonHeight,
+    width: double.infinity,
+    child: ClipRRect(
+      borderRadius: borderRadius,
+      child: EasyButton(
+        type: EasyButtonType.elevated,
+        onPressed: onPress as void Function()?,
+        buttonColor: color ?? const Color(0xFF0000FF),
+        idleStateWidget: Text(
+          hint,
+          style: TextStyle(
+            fontSize: fontSize,
+          ),
+        ),
+        loadingStateWidget: const CircularProgressIndicator(
+          strokeWidth: 2.5,
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.white,
+          ),
+        ),
+        useWidthAnimation: false,
+        useEqualLoadingStateWidgetDimension: true,
+        height: 45,
+        elevation: 0.0,
+        contentGap: 5.1,
+      ),
+    ),
+  );
+}
+
+
+class CustomButton1 extends StatelessWidget {
   final String? hint;
   final Function onPress;
   final Color? color;
   final BorderRadius borderRadius;
 
-  const CustomButton(
+  const CustomButton1(
       {super.key,
       required this.hint,
       required this.onPress,
@@ -22,12 +66,9 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        final buttonWidth =
-            constraints.maxWidth * 0.8; // Adjust the width as needed
-        const buttonHeight =
-            50.0; // You can adjust the height according to your preference
-        const fontSize =
-            buttonHeight * 0.38; // Adjust font size relative to button height
+        final buttonWidth = constraints.maxWidth * 0.8;
+        const buttonHeight = 50.0;
+        const fontSize = buttonHeight * 0.38;
 
         return SizedBox(
           height: buttonHeight,
@@ -74,7 +115,8 @@ class VehicleCard extends StatelessWidget {
     super.key,
     required this.vName,
     required this.image,
-    required this.onPress, required this.height,
+    required this.onPress,
+    required this.height,
   });
 
   @override
@@ -387,5 +429,56 @@ otpSnackBar(String message) {
     colorText: Colors.white,
     borderRadius: 10,
     margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+  );
+}
+
+Widget exitDialog(context) {
+  return Dialog(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          "Confirm?",
+          style: TextStyle(fontSize: 16),
+        ),
+        Divider(),
+        SizedBox(height: 10),
+        Text(
+          "Are you sure want to exit",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0000FF),
+                padding: EdgeInsets.all(12),
+              ),
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: "Yes".text.color(Colors.white).make(),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0000FF),
+                padding: EdgeInsets.all(12),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: "No".text.color(Colors.white).make(),
+            ),
+          ],
+        )
+      ],
+    )
+        .box
+        .color(Color.fromRGBO(239, 239, 239, 1))
+        .roundedSM
+        .padding(EdgeInsets.all(10))
+        .make(),
   );
 }

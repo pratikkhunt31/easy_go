@@ -13,7 +13,6 @@ class AuthController extends GetxController {
   bool phoneAuthCheck = false;
   UserCredential? userCredential;
 
-
   bool isValidPhoneNumber(String phoneNumber) {
     // Check if the phone number is a valid Indian mobile number with 10 digits
     return RegExp(r'^[6-9]\d{9}$').hasMatch(phoneNumber);
@@ -29,6 +28,7 @@ class AuthController extends GetxController {
           log('Completed');
           userCredential = credential as UserCredential?;
           await auth.signInWithCredential(credential);
+          currentUser = auth.currentUser;
         },
         forceResendingToken: resendTokenId,
         verificationFailed: (FirebaseAuthException e) {
@@ -50,24 +50,20 @@ class AuthController extends GetxController {
     }
   }
 
-  // verifyOtp(String otpNumber) async {
-  //   log("Called");
-  //   PhoneAuthCredential credential =
-  //       PhoneAuthProvider.credential(verificationId: verId, smsCode: otpNumber);
-  //   log("loggedIn");
-  //   await auth.signInWithCredential(credential);
-  // }
   Future<void> verifyOtp(String otpNumber) async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verId, smsCode: otpNumber);
       await auth.signInWithCredential(credential);
+      currentUser = auth.currentUser;
+      otpSnackBar("OTP verified successfully");
     } catch (e) {
       rethrow;
     }
   }
 
-  saveUserInfo(String name, String email, String phone) async {
+  Future<void> saveUserInfo(String name, String email, String phone) async {
+    print(currentUser!.uid);
     try {
       if (currentUser != null) {
         Map users = {
@@ -121,8 +117,6 @@ class AuthController extends GetxController {
       errorSnackBar("Error logging out", e);
     }
   }
-
-
 
 // validSnackBar(String message) {
 //   Get.snackbar(

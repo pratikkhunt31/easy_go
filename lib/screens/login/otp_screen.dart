@@ -1,10 +1,13 @@
+import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/controller/auth_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../widget/custom_widget.dart';
+import '../home_view.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;
@@ -22,7 +25,6 @@ class _OtpScreenState extends State<OtpScreen> {
   String? otpCode;
   TextEditingController otpController = TextEditingController();
   AuthController authController = Get.put(AuthController());
-  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -136,17 +138,12 @@ class _OtpScreenState extends State<OtpScreen> {
                                 print(widget.name!);
                                 print(widget.email!);
                                 print(widget.phoneNumber);
-                                // if (user != null) {
-                                  // Update user profile with display name
-                                // user!.updateDisplayName(widget.name!);
-                                // }
-                                // authController.successSnackBar(
-                                //     "OTP verified successfully");
-                                // Get.off(() =>  HomeView());
-                              } catch (e) {
+                                print(currentUser);
+                                Get.offAll(() =>  HomeView());
 
+                              } catch (e) {
                                 // If verification fails, show error message
-                                errorSnackBar("Error verifying OTP", e);
+                                // validSnackBar("Error verifying OTP $e");
                               }
                             }
                           : () {},

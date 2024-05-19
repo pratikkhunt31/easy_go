@@ -60,6 +60,7 @@ dependencies:
   provider: ^6.1.2
   http: ^0.13.5
   shimmer: ^3.0.0
+  velocity_x: ^3.6.0
 
 
 dev_dependencies:

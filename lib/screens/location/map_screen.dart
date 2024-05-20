@@ -4,11 +4,15 @@ import 'package:easy_go/assistants/assistantsMethod.dart';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../dataHandler/appData.dart';
+
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+
+  const MapScreen( {super.key,});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -22,6 +26,7 @@ class _MapScreenState extends State<MapScreen> {
   var geoLocator = Geolocator();
   String? currentAddress;
   bool isLoading = false;
+  // final LocationController _locationController = Get.find<LocationController>();
 
   @override
   void initState() {
@@ -29,6 +34,8 @@ class _MapScreenState extends State<MapScreen> {
     // Call the method to check and request location permissions
     checkLocationPermission();
   }
+
+
 
   void checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -79,6 +86,7 @@ class _MapScreenState extends State<MapScreen> {
     // });
     updateAddress(latLngPosition);
   }
+
 
   void updateAddress(LatLng position) async {
     setState(() {
@@ -184,13 +192,39 @@ class _MapScreenState extends State<MapScreen> {
                             highlightColor: Colors.grey[100]!,
                             child: CustomButton(
                               hint: "Confirm Location",
-                              onPress: () {},
+                              onPress: () {
+                                if (currentAddress != null) {
+                                  // Navigator.pop(context, currentAddress);
+                                  Get.back(result :currentAddress);
+                                }
+                                // confirmLocation();
+                                // _locationController.updateSelectedLocation(currentAddress!);
+                                // Get.back();
+                              },
                               borderRadius: BorderRadius.all(Radius.circular(5)),
                             ),
                           )
                         : CustomButton(
                             hint: "Confirm Location",
-                            onPress: () {},
+                            onPress: () {
+                              // if (currentAddress != null) {
+                              //   // Navigator.pop(context, currentAddress);
+                              //   Get.back(result :currentAddress);
+                              // }
+                              // Get.back(() => );
+                              if (currentAddress != null) {
+                                Navigator.pop(context, currentAddress);
+                              }
+                              // confirmLocation();
+                              // ElevatedButton(
+                              //   onPressed: () {
+                              //     if (currentAddress != null) {
+                              //       Navigator.pop(context, currentAddress);
+                              //     }
+                              //   },
+                              //   child: Text("Select this location"),
+                              // ),
+                            },
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                           ),
                   ],

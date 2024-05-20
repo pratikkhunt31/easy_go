@@ -1,10 +1,8 @@
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/controller/auth_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 import '../../widget/custom_widget.dart';
 import '../home_view.dart';

@@ -61,6 +61,8 @@ dependencies:
   http: ^0.13.5
   shimmer: ^3.0.0
   velocity_x: ^3.6.0
+  video_player: ^2.6.1
+  page_transition: ^2.1.0
 
 
 dev_dependencies:
@@ -71,7 +73,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/1024.png"
+  image_path: "assets/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -96,7 +98,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/delivery.gif
-#    - images/a_dot_ham.jpeg
+    - assets/images/splash.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

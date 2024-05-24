@@ -23,19 +23,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GetMaterialApp(
 
+    return  GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );
   }
 }
-
-// class AppData extends GetxController{
-//   var pickupLocation = Rxn<Address>();
-//
-//   void updatePickUpLocationAddress(Address pickUpAddress) {
-//     pickupLocation.value = pickUpAddress;
-//
-//   }
-// }

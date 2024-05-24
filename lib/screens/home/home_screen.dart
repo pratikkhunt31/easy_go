@@ -2,6 +2,7 @@ import 'package:easy_go/screens/location/location_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../../widget/custom_widget.dart';
 
@@ -13,8 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -31,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("City Name"),
@@ -152,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(
-                           left: 10.0, right: 10.0, bottom: 10.0),
+                          left: 10.0, right: 10.0, bottom: 10.0),
                       child: Column(
                         children: [
                           SizedBox(height: 10),
@@ -160,9 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Are you looking for Parcel Delivery?",
-                              style: TextStyle(
-                                fontSize: 18
-                              ),
+                              style: TextStyle(fontSize: 18),
                             ),
                           ),
                           SizedBox(height: 10),
@@ -174,7 +170,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 image: 'assets/images/truck.svg',
                                 height: 110,
                                 onPress: () {
-                                  Get.to(() => LocationDetail());
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      child: LocationDetail(),
+                                      type: PageTransitionType.bottomToTop,
+                                    ),
+                                  );
+                                  // Get.to(() => LocationDetail());
                                 },
                               ),
                               const SizedBox(width: 10),

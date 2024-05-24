@@ -159,7 +159,6 @@ class VehicleCard extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          // Get.to(() => const LocationDetail());
                           onPress();
                         },
                         icon: const Icon(

@@ -1,24 +1,22 @@
 import 'dart:async';
 
 import 'package:easy_go/assistants/assistantsMethod.dart';
-import 'package:easy_go/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../dataHandler/appData.dart';
+import '../../widget/custom_widget.dart';
 
-class PickUpMapScreen extends StatefulWidget {
-
-  const PickUpMapScreen( {super.key,});
+class DropOffMapScreen extends StatefulWidget {
+  const DropOffMapScreen({super.key});
 
   @override
-  State<PickUpMapScreen> createState() => _PickUpMapScreenState();
+  State<DropOffMapScreen> createState() => _DropOffMapScreenState();
 }
 
-class _PickUpMapScreenState extends State<PickUpMapScreen> {
+class _DropOffMapScreenState extends State<DropOffMapScreen> {
   final Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
   GoogleMapController? newMapController;
@@ -26,6 +24,7 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
   var geoLocator = Geolocator();
   String? currentAddress;
   bool isLoading = false;
+
   // final LocationController _locationController = Get.find<LocationController>();
 
   @override
@@ -34,8 +33,6 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
     // Call the method to check and request location permissions
     checkLocationPermission();
   }
-
-
 
   void checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -62,15 +59,6 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       currentLocation = position;
     });
 
-    // List<Placemark> placemarks =
-    // await placemarkFromCoordinates(position.latitude, position.longitude);
-    // if (placemarks.isNotEmpty) {
-    //   Placemark placemark = placemarks.first;
-    //   String address =
-    //       "${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}";
-    //   print('Current location: $address');
-    // }
-
     LatLng latLngPosition = LatLng(position.latitude, position.longitude);
 
     CameraPosition cameraPosition =
@@ -79,14 +67,8 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
     newMapController
         ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    // String address = await AssistantsMethod.searchCoordinateAddress(position);
-    // print("This is your address: " + address);
-    // setState(() {
-    //   currentAddress = address;
-    // });
     updateAddress(latLngPosition);
   }
-
 
   void updateAddress(LatLng position) async {
     setState(() {
@@ -195,13 +177,14 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
                               onPress: () {
                                 if (currentAddress != null) {
                                   // Navigator.pop(context, currentAddress);
-                                  Get.back(result :currentAddress);
+                                  Get.back(result: currentAddress);
                                 }
                                 // confirmLocation();
                                 // _locationController.updateSelectedLocation(currentAddress!);
                                 // Get.back();
                               },
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
                             ),
                           )
                         : CustomButton(

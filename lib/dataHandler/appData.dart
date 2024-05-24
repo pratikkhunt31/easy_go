@@ -1,12 +1,16 @@
 import 'package:easy_go/models/address.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AppData extends GetxController{
-    var pickupLocation = Rxn<Address>();
+class AppData extends GetxController {
+  var pickupLocation = Address();
+  var dropOffLocation = Address();
 
   void updatePickUpLocationAddress(Address pickUpAddress) {
-    pickupLocation.value = pickUpAddress;
+    pickupLocation = pickUpAddress;
+  }
+
+  void updateDropOffLocationAddress(Address dropOffAddress) {
+    dropOffLocation = dropOffAddress;
   }
 }
 //

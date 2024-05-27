@@ -1,5 +1,6 @@
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/controller/auth_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -133,20 +134,16 @@ class _OtpScreenState extends State<OtpScreen> {
                               try {
                                 await authController.verifyOtp(otpCode!);
                                 await authController.saveUserInfo(widget.name!, widget.email!, widget.phoneNumber);
-                                print(widget.name!);
-                                print(widget.email!);
-                                print(widget.phoneNumber);
-                                print(currentUser);
                                 Get.offAll(() =>  HomeView());
 
                               } catch (e) {
-                                // If verification fails, show error message
                                 // validSnackBar("Error verifying OTP $e");
                               }
                             }
                           : () {},
                     ),
                   ),
+
                   const SizedBox(height: 20),
                   const Text(
                     "Didn't receive any code?",
@@ -173,4 +170,7 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
   }
+
+
+
 }

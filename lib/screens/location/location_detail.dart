@@ -2,16 +2,15 @@ import 'package:easy_go/assistants/requestAssistants.dart';
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/dataHandler/appData.dart';
 import 'package:easy_go/models/placePredidction.dart';
+import 'package:easy_go/screens/booking/book_ride.dart';
 import 'package:easy_go/screens/location/map_screen.dart';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 import '../../assistants/assistantsMethod.dart';
 import '../../models/address.dart';
 import '../../widget/loc_detail_widget.dart';
@@ -121,11 +120,11 @@ class _LocationDetailState extends State<LocationDetail> {
         pickUpLocController.text = address;
       });
 
-      appData.updatePickUpLocationAddress(Address(
-        placeName: address,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ));
+      // appData.updatePickUpLocationAddress(Address(
+      //   placeName: address,
+      //   latitude: position.latitude,
+      //   longitude: position.longitude,
+      // ));
     } catch (e) {
       // Handle any errors that occur during location fetching
       validSnackBar('Error fetching location: $e');
@@ -154,18 +153,19 @@ class _LocationDetailState extends State<LocationDetail> {
         CameraUpdate.newCameraPosition(cameraPosition),
       );
 
-      String address = await AssistantsMethod.searchCoordinateAddress(position);
+      String address =
+          await AssistantsMethod.searchDropCoordinateAddress(position);
       // print("This is your address: " + address);
 
       setState(() {
         dropOffLocController.text = address;
       });
 
-      appData.updateDropOffLocationAddress(Address(
-        placeName: address,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ));
+      // appData.updateDropOffLocationAddress(Address(
+      //   placeName: address,
+      //   latitude: position.latitude,
+      //   longitude: position.longitude,
+      // ));
     } catch (e) {
       // Handle any errors that occur during location fetching
       validSnackBar('Error fetching location: $e');
@@ -555,138 +555,144 @@ class _LocationDetailState extends State<LocationDetail> {
               ],
             ),
           ),
-          CustomButton(
-            hint: "hint",
-            onPress: () {
-              // print(appData.dropOffLocation.placeName);
-              // print(appData.pickupLocation.placeName);
-              getPlaceDirection();
-            },
-            borderRadius: BorderRadius.circular(10),
-          ),
+          // CustomButton(
+          //   hint: "hint",
+          //   onPress: () {
+          //     print(appData.pickupLocation.placeName);
+          //     print(appData.dropOffLocation.placeName);
+          //     // getPlaceDirection();
+          //   },
+          //   borderRadius: BorderRadius.circular(10),
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
             child: CustomButton(
               hint: "Continue",
               onPress: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Select the truck',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Divider(
-                            thickness: 1.0,
-                            height: 1.0,
-                          ),
-                          Card(
-                            child: ListTile(
-                              leading: SvgPicture.asset('assets/truck.svg',
-                                  width: 50, height: 50),
-                              title: const Text(
-                                'Truck Name',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              subtitle: const Text('Up to 100 Kg'),
-                              trailing: const Text('\$1000'),
-                              onTap: () {
-                                // Handle selection of the first truck
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Card(
-                            child: ListTile(
-                              leading: Image.asset('assets/truck2.png',
-                                  width: 50, height: 50),
-                              title: const Text(
-                                'Truck Name',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              subtitle: const Text('Up to 50 Kg'),
-                              trailing: const Text('\$1500'),
-                              onTap: () {
-                                // Handle selection of the second truck
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.center,
-                            child: CustomButton(
-                              hint: "Continue",
-                              onPress: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 20, horizontal: 16),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Column(
-                                              children: [
-                                                const Text(
-                                                  'Find the Driver',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 10),
-                                                const Divider(
-                                                  thickness: 1.0,
-                                                  height: 1.0,
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      shape: BoxShape.circle),
-                                                  child: const Icon(
-                                                    Icons.person,
-                                                    size: 70,
-                                                    color: Color(0xFF0000FF),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 15),
-                                                const Text(
-                                                    "Waiting for Driver Acceptance")
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(5),
-                              color: const Color(0xFF0000FF),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                Navigator.push(
+                  context,
+                  PageTransition(
+                      child: BookRide(), type: PageTransitionType.bottomToTop),
                 );
+                // Get.to(() => BookRide());
+                // showModalBottomSheet(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return Container(
+                //       padding: const EdgeInsets.symmetric(
+                //           vertical: 20, horizontal: 16),
+                //       child: Column(
+                //         mainAxisSize: MainAxisSize.min,
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           const Text(
+                //             'Select the truck',
+                //             style: TextStyle(
+                //               fontSize: 18,
+                //               fontWeight: FontWeight.bold,
+                //             ),
+                //           ),
+                //           const SizedBox(height: 10),
+                //           const Divider(
+                //             thickness: 1.0,
+                //             height: 1.0,
+                //           ),
+                //           Card(
+                //             child: ListTile(
+                //               leading: SvgPicture.asset('assets/truck.svg',
+                //                   width: 50, height: 50),
+                //               title: const Text(
+                //                 'Truck Name',
+                //                 style: TextStyle(fontSize: 18),
+                //               ),
+                //               subtitle: const Text('Up to 100 Kg'),
+                //               trailing: const Text('\$1000'),
+                //               onTap: () {
+                //                 // Handle selection of the first truck
+                //               },
+                //             ),
+                //           ),
+                //           const SizedBox(height: 10),
+                //           Card(
+                //             child: ListTile(
+                //               leading: Image.asset('assets/truck2.png',
+                //                   width: 50, height: 50),
+                //               title: const Text(
+                //                 'Truck Name',
+                //                 style: TextStyle(fontSize: 18),
+                //               ),
+                //               subtitle: const Text('Up to 50 Kg'),
+                //               trailing: const Text('\$1500'),
+                //               onTap: () {
+                //                 // Handle selection of the second truck
+                //               },
+                //             ),
+                //           ),
+                //           const SizedBox(height: 20),
+                //           Align(
+                //             alignment: Alignment.center,
+                //             child: CustomButton(
+                //               hint: "Continue",
+                //               onPress: () {
+                //                 showModalBottomSheet(
+                //                   context: context,
+                //                   builder: (BuildContext context) {
+                //                     return Container(
+                //                       padding: const EdgeInsets.symmetric(
+                //                           vertical: 20, horizontal: 16),
+                //                       child: Column(
+                //                         mainAxisSize: MainAxisSize.min,
+                //                         crossAxisAlignment:
+                //                             CrossAxisAlignment.start,
+                //                         children: [
+                //                           Center(
+                //                             child: Column(
+                //                               children: [
+                //                                 const Text(
+                //                                   'Find the Driver',
+                //                                   style: TextStyle(
+                //                                     fontSize: 18,
+                //                                     fontWeight: FontWeight.bold,
+                //                                   ),
+                //                                 ),
+                //                                 const SizedBox(height: 10),
+                //                                 const Divider(
+                //                                   thickness: 1.0,
+                //                                   height: 1.0,
+                //                                 ),
+                //                                 const SizedBox(height: 10),
+                //                                 Container(
+                //                                   decoration: BoxDecoration(
+                //                                       color:
+                //                                           Colors.grey.shade300,
+                //                                       shape: BoxShape.circle),
+                //                                   child: const Icon(
+                //                                     Icons.person,
+                //                                     size: 70,
+                //                                     color: Color(0xFF0000FF),
+                //                                   ),
+                //                                 ),
+                //                                 const SizedBox(height: 15),
+                //                                 const Text(
+                //                                     "Waiting for Driver Acceptance")
+                //                               ],
+                //                             ),
+                //                           ),
+                //                         ],
+                //                       ),
+                //                     );
+                //                   },
+                //                 );
+                //               },
+                //               borderRadius: BorderRadius.circular(5),
+                //               color: const Color(0xFF0000FF),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   },
+                // );
               },
               color: const Color(0xFF0000FF),
               borderRadius: BorderRadius.circular(10),

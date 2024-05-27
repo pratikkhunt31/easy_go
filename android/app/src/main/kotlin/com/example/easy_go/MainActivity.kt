@@ -1,4 +1,4 @@
-package com.example.easy_go
+package com.easy_go.user
 
 import io.flutter.embedding.android.FlutterActivity
 

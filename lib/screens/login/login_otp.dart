@@ -32,7 +32,6 @@ class _LoginOtpState extends State<LoginOtp> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.phoneNumber);
     final Size screenSize = MediaQuery.of(context).size;
     final double screenHeight = screenSize.height;
     final double screenWidth = screenSize.width;
@@ -132,10 +131,6 @@ class _LoginOtpState extends State<LoginOtp> {
                         // showProgressDialog(context);
                         try {
                           await authController.verifyOtp(otpCode!);
-                          // await authController.saveUserInfo(widget.name!, widget.email!, widget.phoneNumber);
-                          // hideProgressDialog(context);
-                         successSnackBar(
-                              "OTP verified successfully");
                           Get.offAll(() =>  HomeView());
                         } catch (e) {
                           // hideProgressDialog(context);

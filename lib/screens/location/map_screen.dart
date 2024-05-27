@@ -9,10 +9,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../dataHandler/appData.dart';
+import '../../models/address.dart';
 
 class PickUpMapScreen extends StatefulWidget {
-
-  const PickUpMapScreen( {super.key,});
+  const PickUpMapScreen({
+    super.key,
+  });
 
   @override
   State<PickUpMapScreen> createState() => _PickUpMapScreenState();
@@ -26,6 +28,8 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
   var geoLocator = Geolocator();
   String? currentAddress;
   bool isLoading = false;
+  AppData appData = AppData();
+
   // final LocationController _locationController = Get.find<LocationController>();
 
   @override
@@ -34,8 +38,6 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
     // Call the method to check and request location permissions
     checkLocationPermission();
   }
-
-
 
   void checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -55,38 +57,32 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
     }
   }
 
-  void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      currentLocation = position;
-    });
+  Future<void> locatePosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (mounted) {
+        setState(() {
+          currentLocation = position;
+        });
+      }
 
-    // List<Placemark> placemarks =
-    // await placemarkFromCoordinates(position.latitude, position.longitude);
-    // if (placemarks.isNotEmpty) {
-    //   Placemark placemark = placemarks.first;
-    //   String address =
-    //       "${placemark.name}, ${placemark.locality}, ${placemark.administrativeArea}";
-    //   print('Current location: $address');
-    // }
+      LatLng latLngPosition = LatLng(position.latitude, position.longitude);
 
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+      CameraPosition cameraPosition =
+          new CameraPosition(target: latLngPosition, zoom: 18);
 
-    CameraPosition cameraPosition =
-        new CameraPosition(target: latLngPosition, zoom: 18);
+      newMapController
+          ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    newMapController
-        ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      // String address = await AssistantsMethod.searchCoordinateAddress(position);
 
-    // String address = await AssistantsMethod.searchCoordinateAddress(position);
-    // print("This is your address: " + address);
-    // setState(() {
-    //   currentAddress = address;
-    // });
-    updateAddress(latLngPosition);
+      updateAddress(latLngPosition);
+    } catch (e) {
+      // validSnackBar('Error fetching location: $e');
+      throw e;
+    }
   }
-
 
   void updateAddress(LatLng position) async {
     setState(() {
@@ -192,27 +188,24 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
                             highlightColor: Colors.grey[100]!,
                             child: CustomButton(
                               hint: "Confirm Location",
-                              onPress: () {
+                              onPress: () async {
                                 if (currentAddress != null) {
                                   // Navigator.pop(context, currentAddress);
-                                  Get.back(result :currentAddress);
+                                  Get.back(result: currentAddress);
                                 }
                                 // confirmLocation();
                                 // _locationController.updateSelectedLocation(currentAddress!);
                                 // Get.back();
                               },
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
                             ),
                           )
                         : CustomButton(
                             hint: "Confirm Location",
-                            onPress: () {
-                              // if (currentAddress != null) {
-                              //   // Navigator.pop(context, currentAddress);
-                              //   Get.back(result :currentAddress);
-                              // }
-                              // Get.back(() => );
+                            onPress: () async {
                               if (currentAddress != null) {
+                                locatePosition();
                                 Navigator.pop(context, currentAddress);
                               }
                               // confirmLocation();

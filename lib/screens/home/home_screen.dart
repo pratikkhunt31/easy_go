@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Row(
                                     children: const [
                                       Text(
-                                        "Parul University",
+                                        "Surat",
                                         style: TextStyle(fontSize: 15),
                                       ),
                                       Padding(
@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(width: 10),
                               VehicleCard(
                                 vName: "3-wheeler",
-                                image: 'assets/images/truck2.png',
+                                image: 'assets/images/truck.svg',
                                 height: 90,
                                 onPress: () {
                                   Get.to(() => LocationDetail());

@@ -56,6 +56,7 @@ class AuthController extends GetxController {
           verificationId: verId, smsCode: otpNumber);
       await auth.signInWithCredential(credential);
       currentUser = auth.currentUser;
+
       otpSnackBar("OTP verified successfully");
     } catch (e) {
       rethrow;

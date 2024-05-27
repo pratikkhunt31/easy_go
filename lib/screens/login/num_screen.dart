@@ -39,12 +39,12 @@ class _NumberScreenState extends State<NumberScreen> {
       // User data exists, navigate to OTP screen
       Get.to(() => LoginOtp(
           "+${selectedCountry.phoneCode}" + phoneController.text.trim()));
-      print("Exist");
+
     } else {
       // User data doesn't exist, navigate to login form
       Get.to(() => LoginForm(
           "+${selectedCountry.phoneCode}", phoneController.text.trim()));
-      print("Not Exist");
+
     }
   }
 

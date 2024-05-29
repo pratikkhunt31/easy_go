@@ -2,7 +2,9 @@ import 'package:easy_go/assistants/requestAssistants.dart';
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/dataHandler/appData.dart';
 import 'package:easy_go/models/address.dart';
+import 'package:easy_go/models/allUsers.dart';
 import 'package:easy_go/models/directionDetail.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -93,23 +95,45 @@ class AssistantsMethod {
 
     DirectionDetail directionDetail = DirectionDetail();
 
-    directionDetail.encodedPoint = res["routes"][0]["overview_polyline"]["points"];
+    directionDetail.encodedPoint =
+        res["routes"][0]["overview_polyline"]["points"];
 
-    directionDetail.distanceText = res["routes"][0]["legs"][0]["distance"]["text"];
-    directionDetail.distanceValue = res["routes"][0]["legs"][0]["distance"]["value"];
+    directionDetail.distanceText =
+        res["routes"][0]["legs"][0]["distance"]["text"];
+    directionDetail.distanceValue =
+        res["routes"][0]["legs"][0]["distance"]["value"];
 
-    directionDetail.durationText = res["routes"][0]["legs"][0]["duration"]["text"];
-    directionDetail.durationValue = res["routes"][0]["legs"][0]["duration"]["value"];
+    directionDetail.durationText =
+        res["routes"][0]["legs"][0]["duration"]["text"];
+    directionDetail.durationValue =
+        res["routes"][0]["legs"][0]["duration"]["value"];
 
     return directionDetail;
   }
 
-  static int calculateFares(DirectionDetail directionDetail){
-    double distanceTraveledFare = (directionDetail.distanceValue! / 1000) * 0.20;
+  static int calculateFares(DirectionDetail directionDetail) {
+    double distanceTraveledFare =
+        (directionDetail.distanceValue! / 1000) * 0.20;
     double total = distanceTraveledFare;
 
     double totalAmount = total * 80;
 
     return totalAmount.truncate();
+  }
+
+  static void getCurrentOnlineUserInfo() async {
+    if (currentUser != null) {
+      String userId = currentUser!.uid;
+
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref("users").child(userId);
+
+      DatabaseEvent event = await reference.once();
+      DataSnapshot dataSnapshot = event.snapshot;
+
+      if (dataSnapshot.value != null) {
+        currentUserInfo = Users.fromSnapshot(dataSnapshot);
+      }
+    }
   }
 }

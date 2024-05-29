@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child: LocationDetail(),
+                                      child: LocationDetail(vType: "tempo"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );

@@ -16,7 +16,8 @@ import '../../models/address.dart';
 import '../../widget/loc_detail_widget.dart';
 
 class LocationDetail extends StatefulWidget {
-  const LocationDetail({
+  final String? vType;
+  const LocationDetail({this.vType,
     Key? key,
   }) : super(key: key);
 
@@ -572,7 +573,7 @@ class _LocationDetailState extends State<LocationDetail> {
                 Navigator.push(
                   context,
                   PageTransition(
-                      child: BookRide(), type: PageTransitionType.bottomToTop),
+                      child: BookRide("tempo"), type: PageTransitionType.bottomToTop),
                 );
                 // Get.to(() => BookRide());
                 // showModalBottomSheet(

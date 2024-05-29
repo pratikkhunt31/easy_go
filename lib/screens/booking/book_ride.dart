@@ -3,7 +3,11 @@ import 'dart:math';
 
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/dataHandler/appData.dart';
+import 'package:easy_go/models/allUsers.dart';
 import 'package:easy_go/models/directionDetail.dart';
+import 'package:easy_go/models/rideModel.dart';
+import 'package:easy_go/screens/booking/driver.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,7 +18,8 @@ import '../../assistants/assistantsMethod.dart';
 import '../../widget/custom_widget.dart';
 
 class BookRide extends StatefulWidget {
-  const BookRide({super.key});
+  final String? vType;
+  const BookRide(this.vType, {super.key});
 
   @override
   State<BookRide> createState() => _BookRideState();
@@ -49,8 +54,10 @@ class _BookRideState extends State<BookRide> {
         barrierDismissible: false,
       );
       getPlaceDirection();
+      AssistantsMethod.getCurrentOnlineUserInfo();
     });
   }
+
 
   void updateAddress(LatLng position) async {
     setState(() {
@@ -167,8 +174,8 @@ class _BookRideState extends State<BookRide> {
                                   ),
                                   SizedBox(width: 5),
                                   Expanded(
-                                    child:
-                                        Text(appData.dropOffLocation.placeName!),
+                                    child: Text(
+                                        appData.dropOffLocation.placeName!),
                                   ),
                                 ],
                               ),
@@ -194,15 +201,18 @@ class _BookRideState extends State<BookRide> {
                               ),
                               Divider(),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Total Distance"),
-                                  Text("${totalDistance.toStringAsFixed(2)} km"),
+                                  Text(
+                                      "${totalDistance.toStringAsFixed(2)} km"),
                                 ],
                               ),
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Trip Fare (incl. Toll)"),
                                   Text("₹${farePrice}"),
@@ -210,7 +220,8 @@ class _BookRideState extends State<BookRide> {
                               ),
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Net Fare"),
                                   Text("₹${farePrice}"),
@@ -218,15 +229,18 @@ class _BookRideState extends State<BookRide> {
                               ),
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Amount Payable (rounded)",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     "₹${farePrice}",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -236,7 +250,6 @@ class _BookRideState extends State<BookRide> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -248,7 +261,10 @@ class _BookRideState extends State<BookRide> {
         child: CustomButton(
           hint: "Confirm Ride",
           onPress: () {
-
+            // print();
+            // AssistantsMethod.getCurrentOnlineUserInfo();
+            Get.to(() => Driver());
+            saveRideRequest(farePrice, "tempo");
           },
           borderRadius: BorderRadius.circular(0),
         ),
@@ -384,7 +400,8 @@ class _BookRideState extends State<BookRide> {
   }
 
   int calculateFares(DirectionDetail directionDetail) {
-    double distanceTraveledFare = (directionDetail.distanceValue! / 1000) * 45 /80 ;
+    double distanceTraveledFare =
+        (directionDetail.distanceValue! / 1000) * 45 / 80;
     double total = distanceTraveledFare;
 
     double totalAmount = total * 80;

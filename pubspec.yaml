@@ -65,6 +65,7 @@ dependencies:
   page_transition: ^2.1.0
   flutter_polyline_points: ^1.0.0
   font_awesome_flutter: ^10.4.0
+  intl: ^0.17.0
 
 
 dev_dependencies:

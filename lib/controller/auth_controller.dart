@@ -90,7 +90,6 @@ class AuthController extends GetxController {
       validSnackBar("Error saving user information: $e");
     }
 
-    // final User firebaseUser = (await auth.c);
   }
 
   Future<bool> checkUserDataExists(String phoneNumber) async {

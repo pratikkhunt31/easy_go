@@ -1,4 +1,5 @@
 import 'package:easy_go/models/rideModel.dart';
+import 'package:easy_go/screens/booking/payment.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,6 @@ class Driver extends StatefulWidget {
 }
 
 class _DriverState extends State<Driver> {
-
   late DatabaseReference driverRef;
   Map<dynamic, dynamic>? driverData;
 
@@ -21,46 +21,42 @@ class _DriverState extends State<Driver> {
     // TODO: implement initState
     super.initState();
 
-
-    Future.microtask(() async{
+    Future.microtask(() async {
       String? driverId = await fetchDriverId();
-      driverRef = FirebaseDatabase.instance.reference().child('users').child(driverId!);
+      driverRef =
+          FirebaseDatabase.instance.reference().child('users').child(driverId!);
       getDriverData();
     });
   }
 
-  Future<Map?> getDriverData() async{
+  Future<Map?> getDriverData() async {
     String? driverId = await fetchDriverId();
     if (driverId == null) {
       print("Driver ID is null.");
       return null;
     }
     DatabaseReference driverRef =
-    FirebaseDatabase.instance.ref().child("drivers").child(driverId);
+        FirebaseDatabase.instance.ref().child("drivers").child(driverId);
 
     try {
       DatabaseEvent event = await driverRef.once();
       DataSnapshot snapshot = event.snapshot;
 
       if (snapshot.exists && snapshot.value is Map) {
-        Map<dynamic, dynamic> driver =
-        snapshot.value as Map<dynamic, dynamic>;
+        Map<dynamic, dynamic> driver = snapshot.value as Map<dynamic, dynamic>;
         setState(() {
           driverData = driver;
         });
         return driver;
-
       } else {
         print("No ride requests found or invalid data format.");
       }
-
     } catch (e) {
       print("Failed to retrieve ride requests: $e");
     }
 
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +82,9 @@ class _DriverState extends State<Driver> {
             child: CustomButton(
               hint: "Test",
               onPress: () {
+                // TODO: change this based on your state manegement package
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => Payment()));
               },
               borderRadius: BorderRadius.circular(10),
             ),

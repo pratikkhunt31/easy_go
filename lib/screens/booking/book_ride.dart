@@ -41,7 +41,6 @@ class _BookRideState extends State<BookRide> {
   double totalDistance = 0.0;
   int farePrice = 0;
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -57,7 +56,6 @@ class _BookRideState extends State<BookRide> {
       AssistantsMethod.getCurrentOnlineUserInfo();
     });
   }
-
 
   void updateAddress(LatLng position) async {
     setState(() {

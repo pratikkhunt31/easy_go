@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/controller/auth_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,16 +27,23 @@ class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
   AuthController authController = Get.put(AuthController());
 
+  bool isResendButtonEnabled = false;
+  int resendCoolDown = 60; // cooldown period in seconds
+  late Timer timer;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   verifyPhone();
+    // });
     authController.phoneAuth(widget.phoneNumber);
   }
 
+
   @override
   Widget build(BuildContext context) {
-
     final Size screenSize = MediaQuery.of(context).size;
     final double screenHeight = screenSize.height;
     final double screenWidth = screenSize.width;
@@ -68,7 +77,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     height: screenHeight * 0.3,
                     // 30% of screen height for image
                     child: Image.asset(
-                      'assets/images/number.jpg',
+                      'assets/images/otp.png',
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -133,9 +142,9 @@ class _OtpScreenState extends State<OtpScreen> {
                           ? () async {
                               try {
                                 await authController.verifyOtp(otpCode!);
-                                await authController.saveUserInfo(widget.name!, widget.email!, widget.phoneNumber);
-                                Get.offAll(() =>  HomeView());
-
+                                await authController.saveUserInfo(widget.name!,
+                                    widget.email!, widget.phoneNumber);
+                                Get.offAll(() => HomeView());
                               } catch (e) {
                                 // validSnackBar("Error verifying OTP $e");
                               }
@@ -170,7 +179,4 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
   }
-
-
-
 }

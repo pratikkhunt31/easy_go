@@ -73,7 +73,7 @@ void saveRideRequest(int farePrice, String vType) async {
 
 Future<String?> fetchDriverId() async {
   DatabaseReference rideRequestRef =
-      FirebaseDatabase.instance.ref().child("Ride Request");
+      FirebaseDatabase.instance.ref().child("Ride Request").child(currentUser!.uid);
 
   try {
     DatabaseEvent event = await rideRequestRef.once();

@@ -135,9 +135,9 @@ class VehicleCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 130,
+                    height: 150,
                     child: Center(
-                      child: SvgPicture.asset(
+                      child: Image.asset(
                         image,
                         height: height,
                         fit: BoxFit.cover,
@@ -148,11 +148,11 @@ class VehicleCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(7.0),
                         child: Text(
                           vName,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -163,7 +163,7 @@ class VehicleCard extends StatelessWidget {
                         },
                         icon: const Icon(
                           Icons.arrow_forward_ios,
-                          size: 18,
+                          size: 15,
                         ),
                       )
                     ],
@@ -173,7 +173,7 @@ class VehicleCard extends StatelessWidget {
                     child: Text(
                       'Book for your delivery',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: Colors.grey,
                       ),
                     ),

@@ -65,7 +65,7 @@ class _LoginOtpState extends State<LoginOtp> {
                     height: screenHeight * 0.3,
                     // 30% of screen height for image
                     child: Image.asset(
-                      'assets/images/number.jpg',
+                      'assets/images/number.png',
                       fit: BoxFit.contain,
                     ),
                   ),

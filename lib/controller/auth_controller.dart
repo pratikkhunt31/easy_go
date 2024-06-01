@@ -56,7 +56,6 @@ class AuthController extends GetxController {
           verificationId: verId, smsCode: otpNumber);
       await auth.signInWithCredential(credential);
       currentUser = auth.currentUser;
-
       otpSnackBar("OTP verified successfully");
     } catch (e) {
       rethrow;
@@ -64,7 +63,6 @@ class AuthController extends GetxController {
   }
 
   Future<void> saveUserInfo(String name, String email, String phone) async {
-    print(currentUser!.uid);
     try {
       if (currentUser != null) {
         Map users = {

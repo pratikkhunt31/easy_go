@@ -19,29 +19,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   AuthController authController = Get.put(AuthController());
   TextEditingController nameController = TextEditingController();
-
-  // TextEditingController numController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-
-  void initState() {
-    super.initState();
-    // Check if a user is already logged in
-    if (currentUser != null) {
-      // If a user is logged in, navigate directly to the OTP screen
-      navigateToOtpScreen();
-    }
-  }
-
-  void navigateToOtpScreen() async {
-    // Redirect to OTP screen
-    await Get.off(
-      () => OtpScreen(
-        widget.countryCode + widget.phoneNumber,
-        nameController.text.isNotEmpty ? nameController.text.trim() : null,
-        emailController.text.isNotEmpty ? emailController.text.trim() : null,
-      ),
-    );
-  }
 
   validate() async {
     if (nameController.text.isEmpty) {
@@ -85,26 +63,11 @@ class _LoginFormState extends State<LoginForm> {
       return SizedBox(
         width: screenWidth,
         child: Padding(
-          padding: const EdgeInsets.only(top: 40.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(
-                Icons.location_on_sharp,
-                size: 40,
-                color: Colors.white,
-              ),
-              Text(
-                "Easy Go",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-            ],
+          padding: const EdgeInsets.only(top: 35.0),
+          child: Image.asset(
+            'assets/images/name.png',
+            height: screenHeight * 0.2,
+            width: double.infinity,
           ),
         ),
       );
@@ -114,26 +77,26 @@ class _LoginFormState extends State<LoginForm> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+           Text(
             "Welcome",
             style: TextStyle(
               color: Color(0xFF000000),
               fontWeight: FontWeight.w500,
-              fontSize: 32,
+              fontSize: screenWidth * 0.08,
             ),
           ),
-          const SizedBox(height: 10),
+           SizedBox(height: screenHeight * 0.01),
           const Text("Please Enter Your Correct Details"),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02),
           buildTextFormField(
               controller: nameController, "Name", Icons.person_outline_sharp),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02),
           buildTextFormField("Mobile", Icons.phone,
               sufIcon: Icons.edit, read: true, hint: widget.phoneNumber),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02),
           buildTextFormField(
               controller: emailController, "Email", Icons.email_outlined),
-          const SizedBox(height: 20),
+          SizedBox(height: screenHeight * 0.02),
           SizedBox(
             width: screenWidth,
             child: CustomButton(
@@ -145,7 +108,7 @@ class _LoginFormState extends State<LoginForm> {
               color: const Color(0xFF0000FF),
             ),
           ),
-          const SizedBox(height: 10),
+           SizedBox(height: screenHeight * 0.01),
           const Text(
             "A one time password (OTP) will sent to this mobile number.",
             textAlign: TextAlign.center,
@@ -156,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
 
     Widget buildBottom() {
       return Container(
-        height: screenHeight / 1.67,
+        height: screenHeight / 1.76,
         width: screenWidth,
         padding: const EdgeInsets.only(top: 20),
         decoration: const BoxDecoration(

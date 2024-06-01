@@ -166,9 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
+                                vName: "Atul Shakti",
+                                image: 'assets/images/atul-shakti.png',
+                                height: 150,
                                 onPress: () {
                                   Navigator.push(
                                     context,
@@ -182,144 +182,87 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(width: 10),
                               VehicleCard(
-                                vName: "3-wheeler",
-                                image: 'assets/images/truck.svg',
+                                vName: "Chhota Hathi",
+                                image: 'assets/images/mini.png',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              VehicleCard(
+                                vName: "Suzuki Pickup",
+                                image: 'assets/images/suzuki.png',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              // Add space between SizedBox widgets
+                              VehicleCard(
+                                vName: "Bolero",
+                                image: 'assets/images/bolero.png',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              VehicleCard(
+                                vName: "e-Tempo",
+                                image: 'assets/images/e-tempo.png',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              // Add space between SizedBox widgets
+                              VehicleCard(
+                                vName: "Auto Rickshaw",
+                                image: 'assets/images/auto.png',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              VehicleCard(
+                                vName: "e-Rickshaw",
+                                image: 'assets/images/e-rickshaw.jpg',
+                                height: 110,
+                                onPress: () {
+                                  Get.to(() => LocationDetail());
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              // Add space between SizedBox widgets
+                              VehicleCard(
+                                vName: "Eicher",
+                                image: 'assets/images/eicher.png',
                                 height: 90,
                                 onPress: () {
                                   Get.to(() => LocationDetail());
                                 },
                               ),
-                              // Expanded(
-                              //   child: Material(
-                              //     elevation: 20,
-                              //     child: Container(
-                              //       color: Colors.white,
-                              //       child: Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: [
-                              //           Container(
-                              //             height: 130,
-                              //             child: Center(
-                              //               child: Image.asset(
-                              //                 'assets/images/truck2.png',
-                              //                 // Replace with your image URL
-                              //                 // width: double.infinity,
-                              //                 height: 90,
-                              //                 // fit: BoxFit.cover,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //           Row(
-                              //             mainAxisAlignment:
-                              //                 MainAxisAlignment.spaceBetween,
-                              //             children: [
-                              //               const Padding(
-                              //                 padding: EdgeInsets.all(8.0),
-                              //                 child: Text(
-                              //                   '3 - Wheeler',
-                              //                   style: TextStyle(
-                              //                     fontSize: 18,
-                              //                     fontWeight: FontWeight.bold,
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //               IconButton(
-                              //                 onPressed: () {},
-                              //                 icon: const Icon(
-                              //                     Icons.arrow_forward_ios,
-                              //                     size: 18),
-                              //               )
-                              //             ],
-                              //           ),
-                              //           const Padding(
-                              //             padding: EdgeInsets.only(
-                              //                 left: 8.0, bottom: 8.0),
-                              //             child: Text(
-                              //               'Book for your delivery',
-                              //               style: TextStyle(
-                              //                 fontSize: 16,
-                              //                 color: Colors.grey,
-                              //               ),
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
-                              const SizedBox(width: 10),
-                              // Add space between SizedBox widgets
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
-                              const SizedBox(width: 10),
-                              // Add space between SizedBox widgets
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
-                              const SizedBox(width: 10),
-                              // Add space between SizedBox widgets
-                              VehicleCard(
-                                vName: "Tempo",
-                                image: 'assets/images/truck.svg',
-                                height: 110,
-                                onPress: () {
-                                  Get.to(() => LocationDetail());
-                                },
-                              ),
+
                             ],
                           ),
                         ],

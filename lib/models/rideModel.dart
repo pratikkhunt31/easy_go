@@ -8,7 +8,7 @@ import '../dataHandler/appData.dart';
 DatabaseReference rideRequestRef = FirebaseDatabase.instance.ref();
 AppData appData = Get.put(AppData());
 
-void saveRideRequest(int farePrice, String vType) async {
+Future<String> saveRideRequest(int farePrice, String vType) async {
   var pickUp = appData.pickupLocation;
   var dropOff = appData.dropOffLocation;
 
@@ -61,8 +61,12 @@ void saveRideRequest(int farePrice, String vType) async {
     });
 
     successSnackBar("Ride request sent successfully.");
+
+    return rideRequestId;
   } catch (e) {
     print("Failed to send ride request: $e");
+
+    return "";
   }
 }
 

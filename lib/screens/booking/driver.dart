@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/models/rideModel.dart';
 import 'package:easy_go/screens/home/home_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -10,7 +11,11 @@ import 'package:http/http.dart' as http;
 import '../../widget/custom_widget.dart';
 
 class Driver extends StatefulWidget {
-  const Driver({super.key});
+  final int amountToBePaid;
+  final String rideRequestId;
+
+  const Driver(
+      {super.key, required this.amountToBePaid, required this.rideRequestId});
 
   @override
   State<Driver> createState() => _DriverState();
@@ -140,10 +145,20 @@ class _DriverState extends State<Driver> {
   }
 
   void savePaymentDetails(String orderId, String? paymentId) {
-    // TODO: save "razorpay_order_id" and "razorpay_payment_id" inside ride request collection for further assistance and refunds
-
     debugPrint("order id: $orderId");
     debugPrint("payment id: $paymentId");
+
+    DatabaseReference paymentDetailsRef = FirebaseDatabase.instance
+        .ref()
+        .child("Ride Request")
+        .child(widget.rideRequestId)
+        .child("paymentDetails");
+
+    paymentDetailsRef.update({
+      "orderId": orderId,
+      "paymentId": paymentId,
+      "status": paymentId != null ? "success" : "failed"
+    });
   }
 
   @override
@@ -191,17 +206,24 @@ class _DriverState extends State<Driver> {
           hint: "Proceed to Payment",
           onPress: () {
             log('Payment Button Pressed');
+
+            if (driverData == null) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Driver data not available. Please try again."),
+                backgroundColor: Colors.red,
+              ));
+              return;
+            }
+
             openCheckout(
-              // TODO: use real details here
-              userEmail:
-                  "example@example.com", // email of user requesting the ride
-              userPhoneNumber:
-                  "1234567890", // phone number of user requesting the ride
+              userEmail: currentUserInfo?.email.toString() ??
+                  "", // email of user requesting the ride
+              userPhoneNumber: currentUserInfo?.phone.toString() ??
+                  "", // phone number of user requesting the ride
               amount: 100,
               driverRazorpayAccId: driverData!["account_id"],
-              orderTitle: "Vadodara to Ahmedabad", // title of the order
-              orderId:
-                  null, // TODO: check ride request collection for current ride and see if there's already an order id, if yes then use it
+              orderTitle: "Pay Securely", // title of the order
+              orderId: null,
             );
           },
           borderRadius: BorderRadius.circular(10),

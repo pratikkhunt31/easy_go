@@ -258,11 +258,14 @@ class _BookRideState extends State<BookRide> {
       bottomNavigationBar: BottomAppBar(
         child: CustomButton(
           hint: "Confirm Ride",
-          onPress: () {
-            // print();
-            // AssistantsMethod.getCurrentOnlineUserInfo();
-            Get.to(() => Driver());
-            saveRideRequest(farePrice, "tempo");
+          onPress: () async {
+            await AssistantsMethod.getCurrentOnlineUserInfo();
+
+            final String rideRequestId =
+                await saveRideRequest(farePrice, "tempo");
+
+            Get.to(() => Driver(
+                amountToBePaid: farePrice, rideRequestId: rideRequestId));
           },
           borderRadius: BorderRadius.circular(0),
         ),

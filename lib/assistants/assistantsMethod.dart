@@ -121,7 +121,7 @@ class AssistantsMethod {
     return totalAmount.truncate();
   }
 
-  static void getCurrentOnlineUserInfo() async {
+  static Future<void> getCurrentOnlineUserInfo() async {
     if (currentUser != null) {
       String userId = currentUser!.uid;
 

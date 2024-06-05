@@ -17,7 +17,8 @@ import '../../widget/loc_detail_widget.dart';
 
 class LocationDetail extends StatefulWidget {
   final String? vType;
-  const LocationDetail({this.vType,
+  const LocationDetail({
+    this.vType,
     Key? key,
   }) : super(key: key);
 
@@ -426,7 +427,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       cursorColor: Colors.black,
                       readOnly: true,
                       onTap: () {
-                        dropOFfLocationSearchSheet;
+                        dropOFfLocationSearchSheet();
                       },
                       onChanged: (val) {
                         findPlace(val);
@@ -573,7 +574,8 @@ class _LocationDetailState extends State<LocationDetail> {
                 Navigator.push(
                   context,
                   PageTransition(
-                      child: BookRide("tempo"), type: PageTransitionType.bottomToTop),
+                      child: BookRide("tempo"),
+                      type: PageTransitionType.bottomToTop),
                 );
                 // Get.to(() => BookRide());
                 // showModalBottomSheet(

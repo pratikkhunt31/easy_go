@@ -88,7 +88,7 @@ class _DriverState extends State<Driver> {
         Uri.parse('https://easygoapi-eieu6qudpq-uc.a.run.app/orders'),
         body: json.encode({
           "amount": amount,
-          "acc_id": driverRazorpayAccId,
+          "account_id": driverRazorpayAccId,
           "order_title": orderTitle
         }),
         headers: {
@@ -111,6 +111,8 @@ class _DriverState extends State<Driver> {
 
       razorpay.open(options);
     } else {
+      debugPrint(json.decode(response.body).toString());
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Failed to create order. Please try again."),
         backgroundColor: Colors.red,
@@ -220,7 +222,7 @@ class _DriverState extends State<Driver> {
                   "", // email of user requesting the ride
               userPhoneNumber: currentUserInfo?.phone.toString() ??
                   "", // phone number of user requesting the ride
-              amount: 100,
+              amount: widget.amountToBePaid,
               driverRazorpayAccId: driverData!["account_id"],
               orderTitle: "Pay Securely", // title of the order
               orderId: null,

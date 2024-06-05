@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../widget/custom_widget.dart';
+import '../booking/driver.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -201,7 +202,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 image: 'assets/images/suzuki.png',
                                 height: 110,
                                 onPress: () {
-                                  Get.to(() => LocationDetail());
+                                  Get.to(() => Driver());
+                                  // Get.to(() => LocationDetail());
                                 },
                               ),
                               const SizedBox(width: 10),

@@ -35,6 +35,7 @@ void saveRideRequest(int farePrice, String vType) async {
     'v_type': vType,
     'pickUp': pickUpLocMap,
     'dropOff': dropOffLocMap,
+    'u_id': currentUser!.uid,
     'created_at': formattedDateTime,
     'rider_name': currentUserInfo!.name,
     'rider_phone': currentUserInfo!.phone,
@@ -55,7 +56,7 @@ void saveRideRequest(int farePrice, String vType) async {
       Map<String, dynamic> drivers =
           Map<String, dynamic>.from(event.snapshot.value as Map);
       drivers.forEach((key, value) {
-        if (value['vehicleType'] == 'Tempo' && value['is_online'] == true) {
+        if (value['vehicleType'] == vType && value['is_online'] == true) {
           DatabaseReference driverRef =
               driversRef.child(key).child('newRideRequests');
           driverRef.child(rideRequestId).set(true);
@@ -71,9 +72,42 @@ void saveRideRequest(int farePrice, String vType) async {
   }
 }
 
+var driverDetails = {}.obs;
+
+void fetchDriverDetails() async {
+  if (currentUser == null) {
+    print("No current user is logged in.");
+    return;
+  }
+
+  DatabaseReference rideRequestsRef = FirebaseDatabase.instance.ref().child('Ride Request');
+  rideRequestsRef.once().then((DatabaseEvent event) {
+    if (event.snapshot.value != null) {
+      Map<String, dynamic> allRideRequests = Map<String, dynamic>.from(event.snapshot.value as Map);
+
+      for (var entry in allRideRequests.entries) {
+        var rideRequest = Map<String, dynamic>.from(entry.value);
+        if (rideRequest.containsKey('u_id') && rideRequest['u_id'] == currentUser!.uid) {
+          if (rideRequest.containsKey('driver_id')) {
+            String driverId = rideRequest['driver_id'] as String? ?? "";
+            if (driverId.isNotEmpty && driverId != "waiting") {
+              // If a driver ID is found and it's not "waiting"
+              return driverId;
+            }
+            // Assuming you only want the first matching request
+            break;
+          }
+        }
+      }
+    }
+  }).catchError((error) {
+    print("Failed to fetch driver details: $error");
+  });
+}
+
 Future<String?> fetchDriverId() async {
   DatabaseReference rideRequestRef =
-      FirebaseDatabase.instance.ref().child("Ride Request").child(currentUser!.uid);
+      FirebaseDatabase.instance.ref().child("Ride Request");
 
   try {
     DatabaseEvent event = await rideRequestRef.once();
@@ -90,7 +124,8 @@ Future<String?> fetchDriverId() async {
         }
       }
       // return rideRequests['driver_id'];
-    } else {
+    }
+    else {
       print("No ride requests found or invalid data format.");
     }
   } catch (e) {

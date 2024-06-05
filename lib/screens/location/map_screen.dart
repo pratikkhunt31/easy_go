@@ -102,6 +102,7 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       speedAccuracy: 0.0,
     ));
 
+
     setState(() {
       currentAddress = address;
       isLoading = false;

@@ -297,8 +297,8 @@ class _LocationDetailState extends State<LocationDetail> {
                             await locatePosition();
                           } catch (e) {
                             // Handle any errors that occur while fetching the location
-                            validSnackBar('Error fetching location: $e');
-                            print(e);
+                            // validSnackBar('Error fetching location: $e');
+                            // print(e);
                           } finally {
                             Navigator.pop(context); // Close the progress dialog
                           }
@@ -478,8 +478,8 @@ class _LocationDetailState extends State<LocationDetail> {
                             await locateDropPosition();
                           } catch (e) {
                             // Handle any errors that occur while fetching the location
-                            validSnackBar('Error fetching location: $e');
-                            print(e);
+                            // validSnackBar('Error fetching location: $e');
+                            // print(e);
                           } finally {
                             Navigator.pop(context); // Close the progress dialog
                           }

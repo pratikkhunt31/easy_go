@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:easy_go/models/rideModel.dart';
-import 'package:easy_go/screens/booking/payment.dart';
 import 'package:easy_go/screens/home/home_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -62,13 +61,11 @@ class _DriverState extends State<Driver> {
   }
 
   void openCheckout({
-    // If there's an order associated with the ride/trip then pass it here to avoid creating a new order
     String? orderId,
     required String userPhoneNumber,
     required String userEmail,
     required int amount,
     required String driverRazorpayAccId,
-    // Better to use trip pickup and drop off location as order title
     required String orderTitle,
   }) async {
     if (orderId != null) {
@@ -117,8 +114,10 @@ class _DriverState extends State<Driver> {
   }
 
   void errorHandler(response) {
-    // Show any failure element here, by default it's a snackbar
-    // Also save "orderId" for further assistance and refunds
+    if (response.data != null) {
+      savePaymentDetails(response.data!["razorpay_order_id"],
+          response.data!["razorpay_payment_id"]);
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response.toString()),
@@ -127,10 +126,10 @@ class _DriverState extends State<Driver> {
   }
 
   void successHandler(PaymentSuccessResponse response) {
-    // Move to the next screen and save any data to Firebase database here
-    // Also save "razorpay_order_id" and "razorpay_payment_id" for further assistance and refunds, see debugPrint() below to know more
-    // Sample of debugPrint() output: {razorpay_signature: 0cc1710ccc23e5a4d2466734dcd3341cf017cff7062bab23c248b71b751fbcd3, razorpay_order_id: order_OGhraAQrMN4H8e, razorpay_payment_id: pay_OGhrnQfEgcIvlv}
-    debugPrint(response.data.toString());
+    if (response.data != null) {
+      savePaymentDetails(response.data!["razorpay_order_id"],
+          response.data!["razorpay_payment_id"]);
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response.paymentId!),
@@ -138,6 +137,13 @@ class _DriverState extends State<Driver> {
     ));
 
     Get.offAll(HomeScreen());
+  }
+
+  void savePaymentDetails(String orderId, String? paymentId) {
+    // TODO: save "razorpay_order_id" and "razorpay_payment_id" inside ride request collection for further assistance and refunds
+
+    debugPrint("order id: $orderId");
+    debugPrint("payment id: $paymentId");
   }
 
   @override
@@ -186,12 +192,16 @@ class _DriverState extends State<Driver> {
           onPress: () {
             log('Payment Button Pressed');
             openCheckout(
-              userEmail: "example@example.com",
-              userPhoneNumber: "1234567890",
-              amount: 100, // Replace with actual amount
-              driverRazorpayAccId: "acc_OGZYAaPFqQGXKV",
-              orderTitle:
-                  "Vadodara to Ahmedabad", // Replace with actual order title
+              // TODO: use real details here
+              userEmail:
+                  "example@example.com", // email of user requesting the ride
+              userPhoneNumber:
+                  "1234567890", // phone number of user requesting the ride
+              amount: 100,
+              driverRazorpayAccId: driverData!["account_id"],
+              orderTitle: "Vadodara to Ahmedabad", // title of the order
+              orderId:
+                  null, // TODO: check ride request collection for current ride and see if there's already an order id, if yes then use it
             );
           },
           borderRadius: BorderRadius.circular(10),

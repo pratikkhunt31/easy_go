@@ -35,9 +35,6 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   verifyPhone();
-    // });
     authController.phoneAuth(widget.phoneNumber);
   }
 
@@ -146,7 +143,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     widget.email!, widget.phoneNumber);
                                 Get.offAll(() => HomeView());
                               } catch (e) {
-                                // validSnackBar("Error verifying OTP $e");
+                                validSnackBar("Error verifying OTP $e");
                               }
                             }
                           : () {},

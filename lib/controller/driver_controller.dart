@@ -37,6 +37,28 @@ class DriverController extends GetxController {
     });
   }
 
+  Future<String?> getDriverIdFromRideRequest(String rideRequestId) async {
+    try {
+      DatabaseReference rideRequestRef = FirebaseDatabase.instance.ref().child('Ride Request').child(rideRequestId);
+      DatabaseEvent event = await rideRequestRef.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      if (snapshot.value != null && snapshot.value is Map) {
+        Map<dynamic, dynamic> rideRequestData = snapshot.value as Map<dynamic, dynamic>;
+        String? driverId = rideRequestData['driver_id'];
+        return driverId;
+      } else {
+        print("Ride request not found or invalid data format.");
+      }
+    } catch (e) {
+      print("Failed to retrieve driver ID: $e");
+    }
+
+    return null;
+  }
+
+
+
   Future<String?> fetchDriverId() async {
     if (currentUser == null) {
       print("No current user is logged in.");

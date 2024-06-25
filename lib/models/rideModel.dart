@@ -6,10 +6,19 @@ import 'package:intl/intl.dart';
 import '../consts/firebase_consts.dart';
 import '../dataHandler/appData.dart';
 
-DatabaseReference rideRequestRef = FirebaseDatabase.instance.ref();
+// DatabaseReference rideRequestRef = FirebaseDatabase.instance.ref();
 AppData appData = Get.put(AppData());
 
-void saveRideRequest(int farePrice, String vType) async {
+Future<String?> saveRideRequest({
+  int? farePrice,
+  String? vType,
+  String? dist,
+  String? sName,
+  String? sNumber,
+  String? rName,
+  String? rNumber,
+  String? goods,
+}) async {
   // rideRequestRef = FirebaseDatabase.instance.ref().child("Ride Request");
 
   var pickUp = appData.pickupLocation;
@@ -31,14 +40,19 @@ void saveRideRequest(int farePrice, String vType) async {
   Map<String, dynamic> rideInfoMap = {
     'driver_id': "waiting",
     'payment_status': "waiting",
-    'payout': "${farePrice}₹",
+    'payout': "${farePrice} ₹",
     'v_type': vType,
+    'status': "pending",
+    'distance': "${dist} km",
     'pickUp': pickUpLocMap,
     'dropOff': dropOffLocMap,
     'u_id': currentUser!.uid,
+    'goods': goods,
     'created_at': formattedDateTime,
-    'rider_name': currentUserInfo!.name,
-    'rider_phone': currentUserInfo!.phone,
+    'sender_name': sName,
+    'sender_phone': sNumber,
+    'receiver_name': rName,
+    'receiver_phone': rNumber,
     'pickUp_address': pickUp.placeName,
     'dropOff_address': dropOff.placeName
   };
@@ -48,6 +62,7 @@ void saveRideRequest(int farePrice, String vType) async {
         FirebaseDatabase.instance.ref().child("Ride Request").push();
     await rideRequestRef.set(rideInfoMap);
     String rideRequestId = rideRequestRef.key!;
+
 
     // Notify relevant drivers
     DatabaseReference driversRef =
@@ -63,6 +78,7 @@ void saveRideRequest(int farePrice, String vType) async {
         }
       });
     });
+    return rideRequestId;
 
     // await rideRequestRef.child("Ride Request").set(rideInfoMap);
     successSnackBar("Ride request sent successfully.");
@@ -70,6 +86,7 @@ void saveRideRequest(int farePrice, String vType) async {
     print("Failed to send ride request: $e");
     // Optionally, handle the error further, such as showing a message to the user
   }
+  return null;
 }
 
 var driverDetails = {}.obs;
@@ -80,14 +97,17 @@ void fetchDriverDetails() async {
     return;
   }
 
-  DatabaseReference rideRequestsRef = FirebaseDatabase.instance.ref().child('Ride Request');
+  DatabaseReference rideRequestsRef =
+      FirebaseDatabase.instance.ref().child('Ride Request');
   rideRequestsRef.once().then((DatabaseEvent event) {
     if (event.snapshot.value != null) {
-      Map<String, dynamic> allRideRequests = Map<String, dynamic>.from(event.snapshot.value as Map);
+      Map<String, dynamic> allRideRequests =
+          Map<String, dynamic>.from(event.snapshot.value as Map);
 
       for (var entry in allRideRequests.entries) {
         var rideRequest = Map<String, dynamic>.from(entry.value);
-        if (rideRequest.containsKey('u_id') && rideRequest['u_id'] == currentUser!.uid) {
+        if (rideRequest.containsKey('u_id') &&
+            rideRequest['u_id'] == currentUser!.uid) {
           if (rideRequest.containsKey('driver_id')) {
             String driverId = rideRequest['driver_id'] as String? ?? "";
             if (driverId.isNotEmpty && driverId != "waiting") {
@@ -124,8 +144,7 @@ Future<String?> fetchDriverId() async {
         }
       }
       // return rideRequests['driver_id'];
-    }
-    else {
+    } else {
       print("No ride requests found or invalid data format.");
     }
   } catch (e) {
@@ -134,7 +153,6 @@ Future<String?> fetchDriverId() async {
   }
   return null;
 }
-
 
 // void cancelRequest(){
 //   rideRequestRef.remove();

@@ -26,8 +26,8 @@ class _LoginFormState extends State<LoginForm> {
       validSnackBar("Name is not empty");
     } else if (emailController.text.isEmpty) {
       validSnackBar("Email Address is not empty");
-    // } else if (!emailController.text.contains("@gmail.com")) {
-    //   validSnackBar("Email Address is not valid");
+    } else if (!emailController.text.contains("@gmail.com")) {
+      validSnackBar("Email Address is not valid");
     } else {
       shareInfo();
     }

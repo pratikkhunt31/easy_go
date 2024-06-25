@@ -34,7 +34,7 @@ class AuthController extends GetxController {
         verificationFailed: (FirebaseAuthException e) {
           log('Failed');
           if (e.code == 'Invalid phone number') {
-            print("The phone is not valid");
+            validSnackBar("The phone is not valid");
           }
         },
         codeSent: (String verificationId, int? resendToken) async {
@@ -76,8 +76,6 @@ class AuthController extends GetxController {
 
         await database.child('users').child(currentUser!.uid).set(users);
 
-        // Navigator.pop(context); // Close the dialog
-        // Get.offAll(() => const HomeScreen());
         successSnackBar("Account created successfully");
       } else {
         // Navigator.pop(context); // Close the dialog
@@ -87,7 +85,6 @@ class AuthController extends GetxController {
       // Navigator.pop(context); // Close the dialog
       validSnackBar("Error saving user information: $e");
     }
-
   }
 
   Future<bool> checkUserDataExists(String phoneNumber) async {

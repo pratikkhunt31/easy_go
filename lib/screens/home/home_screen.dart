@@ -174,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child: LocationDetail(vType: "tempo"),
+                                      child: LocationDetail(vType: "Atul Shakti"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -187,7 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 image: 'assets/images/mini.png',
                                 height: 110,
                                 onPress: () {
-                                  Get.to(() => LocationDetail());
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      child: LocationDetail(vType: "Chhota Hathi"),
+                                      type: PageTransitionType.bottomToTop,
+                                    ),
+                                  );
                                 },
                               ),
 
@@ -202,8 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 image: 'assets/images/suzuki.png',
                                 height: 110,
                                 onPress: () {
-                                  Get.to(() => Driver());
-                                  // Get.to(() => LocationDetail());
+                                  // Get.to(() => Driver());
+                                  Get.to(() => LocationDetail());
                                 },
                               ),
                               const SizedBox(width: 10),

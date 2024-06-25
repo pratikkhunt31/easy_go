@@ -17,7 +17,9 @@ import '../../widget/loc_detail_widget.dart';
 
 class LocationDetail extends StatefulWidget {
   final String? vType;
-  const LocationDetail({this.vType,
+
+  const LocationDetail({
+    this.vType,
     Key? key,
   }) : super(key: key);
 
@@ -28,8 +30,8 @@ class LocationDetail extends StatefulWidget {
 class _LocationDetailState extends State<LocationDetail> {
   // final GlobalKey<ExpansionTileCardState> cardA = GlobalKey();
   // final GlobalKey<ExpansionTileCardState> cardB = GlobalKey();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController numberController = TextEditingController();
+  TextEditingController sNameController = TextEditingController();
+  TextEditingController sNumberController = TextEditingController();
   TextEditingController pickUpLocController = TextEditingController();
   TextEditingController goodsController = TextEditingController();
   TextEditingController rNameController = TextEditingController();
@@ -346,41 +348,41 @@ class _LocationDetailState extends State<LocationDetail> {
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Name",
-                        controller: nameController,
+                        controller: sNameController,
                         icon: Icons.person,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Mobile Number",
-                        controller: numberController,
+                        controller: sNumberController,
                         icon: Icons.call,
                       ),
                       // Add some vertical spacing between fields and checkbox
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: isChecked,
-                            onChanged: (bool? newValue) {
-                              setState(() {
-                                isChecked = newValue ?? false;
-                                if (isChecked) {
-                                  nameController.text =
-                                      currentUser!.displayName ?? '';
-                                  numberController.text =
-                                      currentUser!.phoneNumber ?? ' ';
-                                } else {
-                                  nameController.text = '';
-                                  numberController.text = '';
-                                }
-                              });
-                            },
-                          ),
-                          const Text(
-                            'Use My Details',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Checkbox(
+                      //       value: isChecked,
+                      //       onChanged: (bool? newValue) {
+                      //         setState(() {
+                      //           isChecked = newValue ?? false;
+                      //           if (isChecked) {
+                      //             pNameController.text =
+                      //                 currentUser!.displayName ?? '';
+                      //             pNumberController.text =
+                      //                 currentUser!.phoneNumber ?? ' ';
+                      //           } else {
+                      //             pNameController.text = '';
+                      //             pNumberController.text = '';
+                      //           }
+                      //         });
+                      //       },
+                      //     ),
+                      //     const Text(
+                      //       'Use My Details',
+                      //       style: TextStyle(fontSize: 16),
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Enter Good's Type",
@@ -512,13 +514,13 @@ class _LocationDetailState extends State<LocationDetail> {
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Name",
-                        controller: nameController,
+                        controller: rNameController,
                         icon: Icons.person,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Mobile Number",
-                        controller: numberController,
+                        controller: rNumberController,
                         icon: Icons.call,
                       ),
                       const SizedBox(height: 5),
@@ -536,20 +538,21 @@ class _LocationDetailState extends State<LocationDetail> {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: false, // Set initial value of checkbox
-                            onChanged: (bool? newValue) {
-                              // Handle checkbox value change
-                            },
-                          ),
-                          const Text(
-                            'Use My Details',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
+                      SizedBox(height: 10),
+                      // Row(
+                      //   children: [
+                      //     Checkbox(
+                      //       value: false, // Set initial value of checkbox
+                      //       onChanged: (bool? newValue) {
+                      //         // Handle checkbox value change
+                      //       },
+                      //     ),
+                      //     const Text(
+                      //       'Use My Details',
+                      //       style: TextStyle(fontSize: 16),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -570,11 +573,32 @@ class _LocationDetailState extends State<LocationDetail> {
             child: CustomButton(
               hint: "Continue",
               onPress: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                      child: BookRide("tempo"), type: PageTransitionType.bottomToTop),
-                );
+                if (sNameController.text.isNotEmpty &&
+                    sNumberController.text.isNotEmpty &&
+                    rNameController.text.isNotEmpty &&
+                    goodsController.text.isNotEmpty &&
+                    rNumberController.text.isNotEmpty) {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                        child: BookRide(
+                          widget.vType,
+                          sName: sNameController.text.trim(),
+                          sNumber: sNumberController.text.trim(),
+                          rName: rNameController.text.trim(),
+                          rNumber: rNumberController.text.trim(),
+                          goods: goodsController.text.trim(),
+                        ),
+                        type: PageTransitionType.bottomToTop),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Fill all the details'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
                 // Get.to(() => BookRide());
                 // showModalBottomSheet(
                 //   context: context,

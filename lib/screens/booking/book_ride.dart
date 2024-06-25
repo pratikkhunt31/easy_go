@@ -19,7 +19,21 @@ import '../../widget/custom_widget.dart';
 
 class BookRide extends StatefulWidget {
   final String? vType;
-  const BookRide(this.vType, {super.key});
+  final String sName;
+  final String sNumber;
+  final String rName;
+  final String rNumber;
+  final String goods;
+
+  const BookRide(
+    this.vType, {
+    super.key,
+    required this.sName,
+    required this.sNumber,
+    required this.rName,
+    required this.rNumber,
+    required this.goods,
+  });
 
   @override
   State<BookRide> createState() => _BookRideState();
@@ -41,7 +55,6 @@ class _BookRideState extends State<BookRide> {
   double totalDistance = 0.0;
   int farePrice = 0;
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -57,7 +70,6 @@ class _BookRideState extends State<BookRide> {
       AssistantsMethod.getCurrentOnlineUserInfo();
     });
   }
-
 
   void updateAddress(LatLng position) async {
     setState(() {
@@ -260,11 +272,29 @@ class _BookRideState extends State<BookRide> {
       bottomNavigationBar: BottomAppBar(
         child: CustomButton(
           hint: "Confirm Ride",
-          onPress: () {
+          onPress: () async {
             // print();
             // AssistantsMethod.getCurrentOnlineUserInfo();
-            Get.to(() => Driver());
-            saveRideRequest(farePrice, "tempo");
+            String? rideId = await saveRideRequest(
+              farePrice: farePrice,
+              vType: widget.vType!,
+              sName: widget.sName,
+              sNumber: widget.sNumber,
+              rName: widget.rName,
+              rNumber: widget.rNumber,
+              dist: totalDistance.toStringAsFixed(2),
+              goods: widget.goods,
+            );
+
+            if (rideId != null) {
+              Get.to(() => Driver(
+                    amountToBePaid: farePrice,
+                    rideRequestId: rideId,
+                  ));
+            } else {
+              // Handle error, e.g., show a message to the user
+              validSnackBar("Failed to send ride request. Please try again.");
+            }
           },
           borderRadius: BorderRadius.circular(0),
         ),

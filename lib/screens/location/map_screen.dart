@@ -77,7 +77,7 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
 
       // String address = await AssistantsMethod.searchCoordinateAddress(position);
 
-      updateAddress(latLngPosition);
+        updateAddress(latLngPosition);
     } catch (e) {
       // validSnackBar('Error fetching location: $e');
       throw e;

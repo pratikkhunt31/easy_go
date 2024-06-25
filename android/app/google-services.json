@@ -1,10 +1,30 @@
 {
   "project_info": {
     "project_number": "775114387205",
+    "firebase_url": "https://easy-go-4db50-default-rtdb.firebaseio.com",
     "project_id": "easy-go-4db50",
     "storage_bucket": "easy-go-4db50.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775114387205:android:2e952db897dc68c7a2d16c",
+        "android_client_info": {
+          "package_name": "com.easy_go.partner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACC6c1MTl20ZgZ7AHQEIQJcW99FbOA7Xo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:775114387205:android:15934a929fb46d32a2d16c",
@@ -15,7 +35,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyByM90kL-QTAHjvrg5YSNj3ELbDSGfMICo"
+          "current_key": "AIzaSyACC6c1MTl20ZgZ7AHQEIQJcW99FbOA7Xo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775114387205:android:5b0ea202542a2802a2d16c",
+        "android_client_info": {
+          "package_name": "com.easy_go_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACC6c1MTl20ZgZ7AHQEIQJcW99FbOA7Xo"
         }
       ],
       "services": {

@@ -10,17 +10,20 @@ class DetailWidget extends StatelessWidget {
     required this.controller,
     required this.icon,
     required this.labelText,
+    required this.isNum,
   });
 
   final String labelText;
   final IconData icon;
   final TextEditingController controller;
+  final bool isNum;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       cursorColor: Colors.black,
       controller: controller,
+      keyboardType: isNum ? TextInputType.number : TextInputType.text,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.black),

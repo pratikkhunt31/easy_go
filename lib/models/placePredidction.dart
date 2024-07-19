@@ -103,7 +103,7 @@ void getPickUpAddressDetails(String placeId, context) async{
   }
 }
 
-void getDropAddressDetails(String placeId, context) async{
+void getDropOffAddressDetails(String placeId, context) async{
 
   String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
 

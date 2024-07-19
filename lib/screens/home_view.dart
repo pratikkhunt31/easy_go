@@ -18,15 +18,15 @@ class HomeView extends StatelessWidget {
     var navbarItem = [
       BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
       BottomNavigationBarItem(icon: Icon(Icons.history), label: "Bookings"),
-      BottomNavigationBarItem(
-          icon: Icon(Icons.account_balance_wallet_sharp), label: "Wallet"),
+      // BottomNavigationBarItem(
+      //     icon: Icon(Icons.account_balance_wallet_sharp), label: "Wallet"),
       BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
     ];
 
     var navBody = [
       HomeScreen(),
       Bookings(),
-      Wallet(),
+      // Wallet(),
       ProfileScreen(),
     ];
 

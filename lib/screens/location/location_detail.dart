@@ -3,6 +3,7 @@ import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/dataHandler/appData.dart';
 import 'package:easy_go/models/placePredidction.dart';
 import 'package:easy_go/screens/booking/book_ride.dart';
+import 'package:easy_go/screens/location/drop_map_screen.dart';
 import 'package:easy_go/screens/location/map_screen.dart';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
@@ -86,7 +87,7 @@ class _LocationDetailState extends State<LocationDetail> {
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
         // Handle the case where the user denies or permanently denies permission
-        validSnackBar('User denied or permanently denied location permission');
+        validSnackBar('You have to enable location permission');
       } else {
         // locatePosition();
       }
@@ -233,7 +234,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       readOnly: true,
                       onTap: pickUpLocationSearchSheet,
                       onChanged: (val) {
-                        findPlace(val);
+                        findPickUpPlace(val);
                       },
                       controller: pickUpLocController,
                       decoration: InputDecoration(
@@ -350,46 +351,42 @@ class _LocationDetailState extends State<LocationDetail> {
                         labelText: "Name",
                         controller: sNameController,
                         icon: Icons.person,
+                        isNum: false,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Mobile Number",
                         controller: sNumberController,
                         icon: Icons.call,
+                        isNum: true,
                       ),
                       // Add some vertical spacing between fields and checkbox
-                      // Row(
-                      //   children: [
-                      //     Checkbox(
-                      //       value: isChecked,
-                      //       onChanged: (bool? newValue) {
-                      //         setState(() {
-                      //           isChecked = newValue ?? false;
-                      //           if (isChecked) {
-                      //             pNameController.text =
-                      //                 currentUser!.displayName ?? '';
-                      //             pNumberController.text =
-                      //                 currentUser!.phoneNumber ?? ' ';
-                      //           } else {
-                      //             pNameController.text = '';
-                      //             pNumberController.text = '';
-                      //           }
-                      //         });
-                      //       },
-                      //     ),
-                      //     const Text(
-                      //       'Use My Details',
-                      //       style: TextStyle(fontSize: 16),
-                      //     ),
-                      //   ],
-                      // ),
+
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Enter Good's Type",
                         controller: goodsController,
                         icon: Icons.insights_outlined,
+                        isNum: false,
                       ),
-                      const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Checkbox(
+                            activeColor: Color(0xFF0000FF),
+                            value: isChecked,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                isChecked = newValue ?? false;
+                              });
+                            },
+                          ),
+                          const Text(
+                            'For loading from 1st floor and above',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                      // const SizedBox(height: 15),
                     ],
                   ),
                 ),
@@ -427,11 +424,9 @@ class _LocationDetailState extends State<LocationDetail> {
                     child: TextFormField(
                       cursorColor: Colors.black,
                       readOnly: true,
-                      onTap: () {
-                        dropOFfLocationSearchSheet;
-                      },
+                      onTap: dropOFfLocationSearchSheet,
                       onChanged: (val) {
-                        findPlace(val);
+                        findDropOffPlace(val);
                       },
                       controller: dropOffLocController,
                       decoration: InputDecoration(
@@ -491,7 +486,22 @@ class _LocationDetailState extends State<LocationDetail> {
                       LocationButton(
                         label: "Locate On The Map",
                         icon: Icons.map_sharp,
-                        onPress: () {},
+                        onPress: () async {
+                          final selectedDropLocation = await Navigator.push(
+                            context,
+                            PageTransition(
+                                child: DropOffMapScreen(),
+                                type: PageTransitionType.rightToLeft),
+                          );
+                          if (selectedDropLocation != null) {
+                            setState(() {
+                              dropOffLocController.text =
+                                  selectedDropLocation as String;
+                            });
+                          }
+                          // Get location from MapScreen and update locController
+                          //   Get.to(MapScreen());
+                        },
                       ),
                     ],
                   ),
@@ -516,12 +526,14 @@ class _LocationDetailState extends State<LocationDetail> {
                         labelText: "Name",
                         controller: rNameController,
                         icon: Icons.person,
+                        isNum: false,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
                         labelText: "Mobile Number",
                         controller: rNumberController,
                         icon: Icons.call,
+                        isNum: true,
                       ),
                       const SizedBox(height: 5),
                       Row(
@@ -573,16 +585,21 @@ class _LocationDetailState extends State<LocationDetail> {
             child: CustomButton(
               hint: "Continue",
               onPress: () {
-                if (sNameController.text.isNotEmpty &&
+                if (pickUpLocController.text.isNotEmpty &&
+                    dropOffLocController.text.isNotEmpty &&
+                    sNameController.text.isNotEmpty &&
                     sNumberController.text.isNotEmpty &&
+                    sNumberController.text.length == 10 &&
                     rNameController.text.isNotEmpty &&
                     goodsController.text.isNotEmpty &&
-                    rNumberController.text.isNotEmpty) {
+                    rNumberController.text.isNotEmpty &&
+                    rNumberController.text.length == 10) {
                   Navigator.push(
                     context,
                     PageTransition(
                         child: BookRide(
                           widget.vType,
+                          isChecked: isChecked,
                           sName: sNameController.text.trim(),
                           sNumber: sNumberController.text.trim(),
                           rName: rNameController.text.trim(),
@@ -728,7 +745,33 @@ class _LocationDetailState extends State<LocationDetail> {
     );
   }
 
-  void findPlace(String placeName) async {
+  void findPickUpPlace(String placeName) async {
+    if (placeName.length > 1) {
+      String autoCompleteUrl =
+          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:in";
+
+      var res = await RequestAssistants.getRequest(autoCompleteUrl);
+
+      if (res == "failed") {
+        return;
+      }
+      print("Places");
+      print(res);
+      if (res["status"] == "OK") {
+        var predictions = res["predictions"];
+
+        var placeList = (predictions as List)
+            .map((e) => PlacePrediction.fromJson(e))
+            .toList();
+        print("Destination: $placeList");
+        setState(() {
+          placePredictionList = placeList;
+        });
+      }
+    }
+  }
+
+  void findDropOffPlace(String placeName) async {
     if (placeName.length > 1) {
       String autoCompleteUrl =
           "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:in";
@@ -770,7 +813,7 @@ class _LocationDetailState extends State<LocationDetail> {
                   child: TextFormField(
                     controller: pickUpLocController,
                     onChanged: (val) {
-                      findPlace(val);
+                      findPickUpPlace(val);
                     },
                     decoration: InputDecoration(
                       labelText: "Search Location",
@@ -829,7 +872,7 @@ class _LocationDetailState extends State<LocationDetail> {
                   child: TextFormField(
                     controller: dropOffLocController,
                     onChanged: (val) {
-                      findPlace(val);
+                      findDropOffPlace(val);
                     },
                     decoration: InputDecoration(
                       labelText: "Search Location",
@@ -855,7 +898,7 @@ class _LocationDetailState extends State<LocationDetail> {
                             // getPlaceAddressDetails(placePrediction!.place_id, context);
                           });
                           Navigator.pop(context);
-                          getPickUpAddressDetails(
+                          getDropOffAddressDetails(
                               placePredictionList[index].place_id, context);
                         },
                         child: PlaceTile(
@@ -883,7 +926,7 @@ class _LocationDetailState extends State<LocationDetail> {
         context: context,
         builder: (BuildContext context) => ProgressDialog(message: "message"));
 
-    var details = await AssistantsMethod.obtainPlaceDirectionDirection(
+    var details = await AssistantsMethod.obtainPlaceDirection(
         pickUpLatLng, dropOffLatLng);
 
     Navigator.pop(context);

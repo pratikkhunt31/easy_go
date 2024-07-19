@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
 import 'package:shimmer/shimmer.dart';
-
 import '../../widget/custom_widget.dart';
 
 class DropOffMapScreen extends StatefulWidget {
@@ -19,19 +19,35 @@ class DropOffMapScreen extends StatefulWidget {
 class _DropOffMapScreenState extends State<DropOffMapScreen> {
   final Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
+  final Completer<GoogleMapController> controller = Completer();
   GoogleMapController? newMapController;
   Position? currentLocation;
   var geoLocator = Geolocator();
   String? currentAddress;
   bool isLoading = false;
-
-  // final LocationController _locationController = Get.find<LocationController>();
+  loc.LocationData? initialLocation;
+  Timer? locationUpdateTimer;
 
   @override
   void initState() {
     super.initState();
     // Call the method to check and request location permissions
-    checkLocationPermission();
+    Future.microtask(() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            ProgressDialog(message: "Processing, Please wait..."),
+        barrierDismissible: false,
+      );
+      checkLocationPermission();
+      getCurrentLocation();
+      Future.delayed(Duration(seconds: 3), () {
+        setState(() {
+          isLoading = false; // Set isLoading to false after loading is done
+        });
+        Navigator.of(context).pop(); // Dismiss the dialog
+      });
+    });
   }
 
   void checkLocationPermission() async {
@@ -52,22 +68,39 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
     }
   }
 
-  void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      currentLocation = position;
+  Future<void> locatePosition() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (mounted) {
+        setState(() {
+          currentLocation = position;
+        });
+      }
+
+      LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+
+      CameraPosition cameraPosition =
+      new CameraPosition(target: latLngPosition, zoom: 18);
+
+      newMapController
+          ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+      // String address = await AssistantsMethod.searchCoordinateAddress(position);
+
+      updateLocationDetailsAfterDelay(latLngPosition);
+    } catch (e) {
+      // validSnackBar('Error fetching location: $e');
+      throw e;
+    }
+  }
+
+  void updateLocationDetailsAfterDelay(LatLng position) {
+    locationUpdateTimer?.cancel(); // Cancel previous timer
+    locationUpdateTimer = Timer(const Duration(milliseconds: 100), () {
+      // Fetch location details after 500 milliseconds of inactivity
+      updateAddress(position);
     });
-
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
-
-    CameraPosition cameraPosition =
-        new CameraPosition(target: latLngPosition, zoom: 18);
-
-    newMapController
-        ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-    updateAddress(latLngPosition);
   }
 
   void updateAddress(LatLng position) async {
@@ -75,7 +108,7 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
       isLoading = true;
     });
 
-    String address = await AssistantsMethod.searchCoordinateAddress(Position(
+    String address = await AssistantsMethod.searchDropCoordinateAddress(Position(
       latitude: position.latitude,
       longitude: position.longitude,
       timestamp: DateTime.now(),
@@ -94,10 +127,24 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
     });
   }
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 18,
-  );
+  void getCurrentLocation() async {
+    loc.Location location = loc.Location();
+
+    location.getLocation().then((location) => initialLocation = location);
+
+    GoogleMapController googleMapController = await controller.future;
+
+    location.onLocationChanged.listen((newLoc) {
+      initialLocation = newLoc;
+
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+              zoom: 13.5,
+              target: LatLng(newLoc.latitude!, newLoc.longitude!))));
+
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,24 +155,29 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
       ),
       body: Stack(
         children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            initialCameraPosition: _kGooglePlex,
-            myLocationEnabled: true,
-            zoomGesturesEnabled: true,
-            zoomControlsEnabled: true,
-            onMapCreated: (GoogleMapController controller) {
-              mapController.complete(controller);
-              newMapController = controller;
-              locatePosition();
-            },
-            onCameraMove: (CameraPosition position) {
-              updateAddress(position.target);
-            },
-          ),
+          if (initialLocation != null)
+            GoogleMap(
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                    initialLocation!.latitude!, initialLocation!.longitude!),
+                zoom: 18,
+              ),
+              myLocationEnabled: true,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                mapController.complete(controller);
+                newMapController = controller;
+                locatePosition();
+              },
+              onCameraMove: (CameraPosition position) {
+                updateLocationDetailsAfterDelay(position.target);
+              },
+            ),
           Center(
-            child: Image.asset('assets/images/marker2.png'),
+            child: Image.asset('assets/images/drop-pin.png'),
           ),
           if (currentAddress != null)
             Positioned(
@@ -179,9 +231,7 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
                                   // Navigator.pop(context, currentAddress);
                                   Get.back(result: currentAddress);
                                 }
-                                // confirmLocation();
-                                // _locationController.updateSelectedLocation(currentAddress!);
-                                // Get.back();
+
                               },
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
@@ -190,11 +240,7 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
                         : CustomButton(
                             hint: "Confirm Location",
                             onPress: () {
-                              // if (currentAddress != null) {
-                              //   // Navigator.pop(context, currentAddress);
-                              //   Get.back(result :currentAddress);
-                              // }
-                              // Get.back(() => );
+
                               if (currentAddress != null) {
                                 Navigator.pop(context, currentAddress);
                               }
@@ -219,3 +265,8 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
     );
   }
 }
+
+// static const CameraPosition _kGooglePlex = CameraPosition(
+//   target: LatLng(initialLocation.latitude, -122.085749655962),
+//   zoom: 18,
+// );

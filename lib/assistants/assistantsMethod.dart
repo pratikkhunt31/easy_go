@@ -82,7 +82,7 @@ class AssistantsMethod {
     return placeAddress;
   }
 
-  static Future<DirectionDetail?> obtainPlaceDirectionDirection(
+  static Future<DirectionDetail?> obtainPlaceDirection(
       LatLng initialPosition, LatLng finalPosition) async {
     String directionUrl =
         "https://maps.googleapis.com/maps/api/directions/json?destination=${finalPosition.latitude},${finalPosition.longitude}&origin=${initialPosition.latitude},${initialPosition.longitude}&key=$mapKey";

@@ -13,12 +13,4 @@ class AppData extends GetxController {
     dropOffLocation = dropOffAddress;
   }
 }
-//
-// class AppData1 extends ChangeNotifier{
-//   Address? pickUpLocation;
-//
-//   void updatePickUpLocationAddress(Address pickUpAddress) {
-//     pickUpLocation = pickUpAddress;
-//     notifyListeners();
-//   }
-// }
+

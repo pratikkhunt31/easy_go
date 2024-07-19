@@ -481,3 +481,148 @@ Widget exitDialog(context) {
         .make(),
   );
 }
+
+class ContactDetailCard extends StatelessWidget {
+  final String senderName;
+  final String senderPhone;
+  final String receiverName;
+  final String receiverPhone;
+
+  ContactDetailCard({
+    Key? key,
+    required this.senderName,
+    required this.senderPhone,
+    required this.receiverName,
+    required this.receiverPhone,
+  }) : super(key: key);
+
+  // void _launchCaller(String phoneNumber) async {
+  //   final Uri url = Uri(
+  //     scheme: 'tel',
+  //     path: phoneNumber,
+  //   );
+  //   // await canLaunchUrl(url);
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
+  Uri dialNumber = Uri(scheme: 'tel', path: '9558624406');
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      // elevation: 4.0,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ContactTile(
+              title: 'Sender',
+              subtitle: senderName,
+              phoneNumber: senderPhone,
+              icon: Icons.person,
+              color: Colors.green,
+              onCallPressed: () {},
+              // onCallPressed: () => _launchCaller(senderPhone),
+            ),
+            const Divider(thickness: 1, height: 15),
+            ContactTile(
+              title: 'Receiver',
+              subtitle: receiverName,
+              phoneNumber: receiverPhone,
+              icon: Icons.person,
+              color: Colors.red,
+              onCallPressed: () {
+                // callNumber();
+                // canLaunchUrl(Uri(scheme: 'tel', path: '123'));
+                // canLaunchUrl(dialNumber);
+                // _launchCaller('9558624406');
+              },
+              // onCallPressed: () => _launchCaller(receiverPhone),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ContactTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String phoneNumber;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onCallPressed;
+
+  const ContactTile({
+    Key? key,
+    required this.title,
+    required this.subtitle,
+    required this.phoneNumber,
+    required this.icon,
+    required this.color,
+    required this.onCallPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 25,
+          backgroundColor: Colors.white,
+          child: Icon(
+            icon,
+            size: 30,
+            color: color,
+          ),
+        ),
+        const SizedBox(width: 21),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                phoneNumber,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // IconButton(
+        //   icon: Icon(Icons.call, color: Colors.green),
+        //   onPressed: onCallPressed,
+        // ),
+      ],
+    );
+  }
+}
+

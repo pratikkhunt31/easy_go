@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:easy_go/assistants/assistantsMethod.dart';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
 import 'package:shimmer/shimmer.dart';
-
-import '../../dataHandler/appData.dart';
-import '../../models/address.dart';
 
 class PickUpMapScreen extends StatefulWidget {
   const PickUpMapScreen({
@@ -23,20 +22,37 @@ class PickUpMapScreen extends StatefulWidget {
 class _PickUpMapScreenState extends State<PickUpMapScreen> {
   final Completer<GoogleMapController> mapController =
       Completer<GoogleMapController>();
+  final Completer<GoogleMapController> controller = Completer();
   GoogleMapController? newMapController;
   Position? currentLocation;
   var geoLocator = Geolocator();
   String? currentAddress;
-  bool isLoading = false;
-  AppData appData = AppData();
-
-  // final LocationController _locationController = Get.find<LocationController>();
+  bool isLoading = true;
+  loc.LocationData? initialLocation;
+  bool isPermissionDenied = false;
+  Timer? locationUpdateTimer;
 
   @override
   void initState() {
     super.initState();
     // Call the method to check and request location permissions
-    checkLocationPermission();
+    Future.microtask(() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            ProgressDialog(message: "Processing, Please wait..."),
+        barrierDismissible: false,
+      );
+      checkLocationPermission();
+
+      getCurrentLocation();
+      Future.delayed(Duration(seconds: 3), () {
+        setState(() {
+          isLoading = false; // Set isLoading to false after loading is done
+        });
+        Navigator.of(context).pop(); // Dismiss the dialog
+      });
+    });
   }
 
   void checkLocationPermission() async {
@@ -48,7 +64,10 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
         // Handle the case where the user denies or permanently denies permission
-        validSnackBar('User denied or permanently denied location permission');
+        setState(() {
+          isPermissionDenied = true;
+        });
+        // validSnackBar('User denied or permanently denied location permission');
       } else {
         locatePosition();
       }
@@ -77,17 +96,27 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
 
       // String address = await AssistantsMethod.searchCoordinateAddress(position);
 
-        updateAddress(latLngPosition);
+      updateLocationDetailsAfterDelay(latLngPosition);
     } catch (e) {
       // validSnackBar('Error fetching location: $e');
       throw e;
     }
   }
 
-  void updateAddress(LatLng position) async {
-    setState(() {
-      isLoading = true;
+  void updateLocationDetailsAfterDelay(LatLng position) {
+    locationUpdateTimer?.cancel(); // Cancel previous timer
+    locationUpdateTimer = Timer(const Duration(milliseconds: 800), () {
+      // Fetch location details after 500 milliseconds of inactivity
+      updateAddress(position);
     });
+  }
+
+  void updateAddress(LatLng position) async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     String address = await AssistantsMethod.searchCoordinateAddress(Position(
       latitude: position.latitude,
@@ -102,20 +131,72 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       speedAccuracy: 0.0,
     ));
 
+    if (mounted) {
+      setState(() {
+        currentAddress = address;
+        isLoading = false;
+      });
+    }
+  }
 
-    setState(() {
-      currentAddress = address;
-      isLoading = false;
+  void getCurrentLocation() async {
+    loc.Location location = loc.Location();
+
+    location.getLocation().then((location) => initialLocation = location);
+
+    GoogleMapController googleMapController = await controller.future;
+
+    location.onLocationChanged.listen((newLoc) {
+      initialLocation = newLoc;
+
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+              zoom: 13.5,
+              target: LatLng(newLoc.latitude!, newLoc.longitude!))));
+
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 18,
-  );
-
   @override
   Widget build(BuildContext context) {
+    if (isPermissionDenied) {
+      // Show error message if permission is denied
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Location Error"),
+          backgroundColor: const Color(0xFF0000FF),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "You have denied location permission.",
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0000FF),
+                ),
+                onPressed: () {
+                  // Navigate back or retry requesting permission
+                  setState(() {
+                    isPermissionDenied = false;
+                  });
+                  checkLocationPermission();
+                },
+                child: Text("Retry"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Location"),
@@ -123,22 +204,27 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       ),
       body: Stack(
         children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            initialCameraPosition: _kGooglePlex,
-            myLocationEnabled: true,
-            zoomGesturesEnabled: true,
-            zoomControlsEnabled: true,
-            onMapCreated: (GoogleMapController controller) {
-              mapController.complete(controller);
-              newMapController = controller;
-              locatePosition();
-            },
-            onCameraMove: (CameraPosition position) {
-              updateAddress(position.target);
-            },
-          ),
+          if (initialLocation != null)
+            GoogleMap(
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                    initialLocation!.latitude!, initialLocation!.longitude!),
+                zoom: 18,
+              ),
+              myLocationEnabled: true,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                mapController.complete(controller);
+                newMapController = controller;
+                getCurrentLocation();
+              },
+              onCameraMove: (CameraPosition position) {
+                updateLocationDetailsAfterDelay(position.target);
+              },
+            ),
           Center(
             child: Image.asset('assets/images/marker2.png'),
           ),

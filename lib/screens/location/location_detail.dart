@@ -250,23 +250,6 @@ class _LocationDetailState extends State<LocationDetail> {
                     // ),
                   ),
                 ),
-                // (placePredictionList.length > 0)
-                //     ? Padding(
-                //         padding: EdgeInsets.symmetric(vertical: 1.0),
-                //         child: ListView.separated(
-                //           itemBuilder: (context, index) {
-                //             return PlaceTile(
-                //                 placePrediction: placePredictionList[index]);
-                //           },
-                //           separatorBuilder: (BuildContext context, int index) =>
-                //               Divider(),
-                //           itemCount: placePredictionList.length,
-                //           shrinkWrap: true,
-                //           physics: ClampingScrollPhysics(),
-                //           padding: EdgeInsets.only(left: 8),
-                //         ),
-                //       )
-                //     : Container(),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Row(
@@ -288,9 +271,6 @@ class _LocationDetailState extends State<LocationDetail> {
                           try {
                             await locatePosition();
                           } catch (e) {
-                            // Handle any errors that occur while fetching the location
-                            // validSnackBar('Error fetching location: $e');
-                            // print(e);
                           } finally {
                             Navigator.pop(context); // Close the progress dialog
                           }
@@ -313,8 +293,6 @@ class _LocationDetailState extends State<LocationDetail> {
                                   selectedLocation as String;
                             });
                           }
-                          // Get location from MapScreen and update locController
-                          //   Get.to(MapScreen());
                         },
                       ),
                     ],
@@ -435,11 +413,6 @@ class _LocationDetailState extends State<LocationDetail> {
                         ),
                       ),
                     ),
-                    // DetailWidget(
-                    //   labelText: "Location",
-                    //   controller: pickUpLocController,
-                    //   icon: Icons.location_on_sharp,
-                    // ),
                   ),
                 ),
                 Padding(
@@ -463,9 +436,6 @@ class _LocationDetailState extends State<LocationDetail> {
                           try {
                             await locateDropPosition();
                           } catch (e) {
-                            // Handle any errors that occur while fetching the location
-                            // validSnackBar('Error fetching location: $e');
-                            // print(e);
                           } finally {
                             Navigator.pop(context); // Close the progress dialog
                           }
@@ -554,17 +524,14 @@ class _LocationDetailState extends State<LocationDetail> {
               hint: "Continue",
               onPress: () {
                 if (pickUpLocController.text.isNotEmpty &&
-                    dropOffLocController.text.isNotEmpty
-                    // &&
-                    // sNameController.text.trim().isNotEmpty &&
-                    // sNumberController.text.trim().isNotEmpty &&
-                    // sNumberController.text.trim().length == 10 &&
-                    // rNameController.text.trim().isNotEmpty &&
-                    // goodsController.text.trim().isNotEmpty &&
-                    // rNumberController.text.trim().isNotEmpty
-                    // &&
-                    // rNumberController.text.trim().length == 10
-                ) {
+                    dropOffLocController.text.isNotEmpty &&
+                    sNameController.text.trim().isNotEmpty &&
+                    sNumberController.text.trim().isNotEmpty &&
+                    sNumberController.text.trim().length == 10 &&
+                    rNameController.text.trim().isNotEmpty &&
+                    goodsController.text.trim().isNotEmpty &&
+                    rNumberController.text.trim().isNotEmpty &&
+                    rNumberController.text.trim().length == 10) {
                   Navigator.push(
                     context,
                     PageTransition(

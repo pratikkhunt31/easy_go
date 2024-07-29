@@ -46,15 +46,15 @@ class AssistantsMethod {
     return placeAddress;
   }
 
-  static Future<String> searchDropCoordinateAddress(Position position) async {
-    String placeAddress = "";
+  static Future<String> searchDropCoordinateAddress(Position dPosition) async {
+    String dropPlaceAddress = "";
     // String st0, st1, st2, st3, st4, st5, st6;
     String url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey";
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=${dPosition.latitude},${dPosition.longitude}&key=$mapKey";
 
-    var response = await RequestAssistants.getRequest(url);
+    var dropResponse = await RequestAssistants.getRequest(url);
 
-    if (response != 'failed') {
+    if (dropResponse != 'failed') {
       // st0 = response["results"][0]["address_components"][0]["long_name"];
       // st1 = response["results"][0]["address_components"][1]["long_name"];
       // st2 = response["results"][0]["address_components"][5]["long_name"];
@@ -66,12 +66,12 @@ class AssistantsMethod {
       // placeAddress = st0 + ", " + st1 + ", " + st2 + ", "+ st3 + ", ";
       // + st4 + ", "+ st5 + ", " + st6;
       //  + st3 + ", " + st4;
-      placeAddress = response["results"][0]["formatted_address"];
+      dropPlaceAddress = dropResponse["results"][0]["formatted_address"];
 
       Address userDropOffAddress = new Address();
-      userDropOffAddress.longitude = position.longitude;
-      userDropOffAddress.latitude = position.latitude;
-      userDropOffAddress.placeName = placeAddress;
+      userDropOffAddress.longitude = dPosition.longitude;
+      userDropOffAddress.latitude = dPosition.latitude;
+      userDropOffAddress.placeName = dropPlaceAddress;
 
       final appData = Get.put(AppData());
 
@@ -79,7 +79,7 @@ class AssistantsMethod {
 
       // Provider.of<AppData>(context).updatePickUpLocationAddress(userPickUpAddress);
     }
-    return placeAddress;
+    return dropPlaceAddress;
   }
 
   static Future<DirectionDetail?> obtainPlaceDirection(
@@ -136,4 +136,5 @@ class AssistantsMethod {
       }
     }
   }
+
 }

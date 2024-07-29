@@ -28,7 +28,7 @@ class _OtpScreenState extends State<OtpScreen> {
   AuthController authController = Get.put(AuthController());
 
   bool isResendButtonEnabled = false;
-  int resendCoolDown = 60; // cooldown period in seconds
+  int start = 60;
   late Timer timer;
 
   @override
@@ -36,6 +36,28 @@ class _OtpScreenState extends State<OtpScreen> {
     // TODO: implement initState
     super.initState();
     authController.phoneAuth(widget.phoneNumber);
+    startTimer();
+  }
+
+  void startTimer() {
+    start = 60;
+    isResendButtonEnabled = false;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (start <= 1) {
+          timer.cancel();
+          isResendButtonEnabled = true;
+        } else {
+          start--;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
 
@@ -160,12 +182,57 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ),
                   // const SizedBox(height: 15),
-                  const Text(
-                    "Resend New Code",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0000FF),
+                  // const Text(
+                  //   "Resend New Code",
+                  //   style: TextStyle(
+                  //     fontSize: 14,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Color(0xFF0000FF),
+                  //   ),
+                  // ),
+                  GestureDetector(
+                    onTap: isResendButtonEnabled
+                        ? () async {
+                      int retryCount = 0;
+                      const int maxRetries = 3;
+
+                      while (retryCount < maxRetries) {
+                        try {
+                          await authController
+                              .phoneAuth(widget.phoneNumber);
+                          startTimer();
+                          break; // Exit the loop if successful
+                        } catch (e) {
+                          if (e is FirebaseException &&
+                              e.message == 'Too many attempts') {
+                            retryCount++;
+                            if (retryCount >= maxRetries) {
+                              validSnackBar(
+                                  "Too many attempts. Please try again later.");
+                              break;
+                            }
+                            await Future.delayed(Duration(
+                                seconds: 2 *
+                                    retryCount)); // Exponential backoff
+                          } else {
+                            print("Error: $e");
+                            break;
+                          }
+                        }
+                      }
+                    }
+                        : null,
+                    child: Text(
+                      isResendButtonEnabled
+                          ? "Resend New Code"
+                          : "Resend Code in $start seconds",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: isResendButtonEnabled
+                            ? Color(0xFF0000FF)
+                            : Colors.grey,
+                      ),
                     ),
                   ),
                 ],

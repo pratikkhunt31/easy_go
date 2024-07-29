@@ -1,6 +1,6 @@
 import 'package:easy_go/screens/booking/bookings.dart';
 import 'package:easy_go/screens/profile/edit_profile.dart';
-import 'package:easy_go/screens/profile/t&c.dart';
+import 'package:easy_go/screens/profile/privacy.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -271,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     SettingItem(
-                      title: "Terms & Condition",
+                      title: "Privacy Policy",
                       icon: Ionicons.text,
                       bgColor: Colors.blue.shade100,
                       iconColor: Colors.blue,
@@ -280,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           PageTransition(
                             child:
-                            TermsConditionsPage(),
+                            PrivacyPolicy(),
                             type: PageTransitionType.bottomToTop,
                           ),
                         );

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_go/assistants/requestAssistants.dart';
 import 'package:easy_go/consts/firebase_consts.dart';
 import 'package:easy_go/dataHandler/appData.dart';
@@ -82,11 +84,9 @@ class _LocationDetailState extends State<LocationDetail> {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      // Request location permissions if not granted or permanently denied
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
-        // Handle the case where the user denies or permanently denies permission
         validSnackBar('You have to enable location permission');
       } else {
         // locatePosition();
@@ -138,52 +138,41 @@ class _LocationDetailState extends State<LocationDetail> {
 
   Future<void> locateDropPosition() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(
+      Position dropPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
       setState(() {
-        currentDropLocation = position;
+        currentDropLocation = dropPosition;
       });
 
-      LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+      LatLng dropLatLngPosition =
+          LatLng(dropPosition.latitude, dropPosition.longitude);
 
-      CameraPosition cameraPosition = CameraPosition(
-        target: latLngPosition,
+      CameraPosition dropCameraPosition = CameraPosition(
+        target: dropLatLngPosition,
         zoom: 18,
       );
 
       await newMapController?.animateCamera(
-        CameraUpdate.newCameraPosition(cameraPosition),
+        CameraUpdate.newCameraPosition(dropCameraPosition),
       );
 
-      String address =
-          await AssistantsMethod.searchDropCoordinateAddress(position);
-      // print("This is your address: " + address);
+      String dropAddress =
+          await AssistantsMethod.searchDropCoordinateAddress(dropPosition);
 
       setState(() {
-        dropOffLocController.text = address;
+        dropOffLocController.text = dropAddress;
       });
-
-      // appData.updateDropOffLocationAddress(Address(
-      //   placeName: address,
-      //   latitude: position.latitude,
-      //   longitude: position.longitude,
-      // ));
     } catch (e) {
-      // Handle any errors that occur during location fetching
       validSnackBar('Error fetching location: $e');
-      throw e; // Re-throw the error to propagate it further if needed
+      throw e;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final address = appData.pickupLocation.value;
-    // if(address != null) {
-    //   pickUpLocController.text = address.placeName!;
-    // }
-
+    // print(currentUser!.uid);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5FA),
       appBar: AppBar(
@@ -551,19 +540,7 @@ class _LocationDetailState extends State<LocationDetail> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      // Row(
-                      //   children: [
-                      //     Checkbox(
-                      //       value: false, // Set initial value of checkbox
-                      //       onChanged: (bool? newValue) {
-                      //         // Handle checkbox value change
-                      //       },
-                      //     ),
-                      //     const Text(
-                      //       'Use My Details',
-                      //       style: TextStyle(fontSize: 16),
-                      //     ),
-                      //   ],
+
                       // ),
                     ],
                   ),
@@ -571,29 +548,23 @@ class _LocationDetailState extends State<LocationDetail> {
               ],
             ),
           ),
-          // CustomButton(
-          //   hint: "hint",
-          //   onPress: () {
-          //     print(appData.pickupLocation.placeName);
-          //     print(appData.dropOffLocation.placeName);
-          //     // getPlaceDirection();
-          //   },
-          //   borderRadius: BorderRadius.circular(10),
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
             child: CustomButton(
               hint: "Continue",
               onPress: () {
                 if (pickUpLocController.text.isNotEmpty &&
-                    dropOffLocController.text.isNotEmpty &&
-                    sNameController.text.isNotEmpty &&
-                    sNumberController.text.isNotEmpty &&
-                    sNumberController.text.length == 10 &&
-                    rNameController.text.isNotEmpty &&
-                    goodsController.text.isNotEmpty &&
-                    rNumberController.text.isNotEmpty &&
-                    rNumberController.text.length == 10) {
+                    dropOffLocController.text.isNotEmpty
+                    // &&
+                    // sNameController.text.trim().isNotEmpty &&
+                    // sNumberController.text.trim().isNotEmpty &&
+                    // sNumberController.text.trim().length == 10 &&
+                    // rNameController.text.trim().isNotEmpty &&
+                    // goodsController.text.trim().isNotEmpty &&
+                    // rNumberController.text.trim().isNotEmpty
+                    // &&
+                    // rNumberController.text.trim().length == 10
+                ) {
                   Navigator.push(
                     context,
                     PageTransition(
@@ -608,6 +579,9 @@ class _LocationDetailState extends State<LocationDetail> {
                         ),
                         type: PageTransitionType.bottomToTop),
                   );
+                  // log(pickUpLocController.text);
+                  // log(appData.pickupLocation.placeName!);
+                  // log(appData.dropOffLocation.placeName ?? 'NA');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -616,125 +590,6 @@ class _LocationDetailState extends State<LocationDetail> {
                     ),
                   );
                 }
-                // Get.to(() => BookRide());
-                // showModalBottomSheet(
-                //   context: context,
-                //   builder: (BuildContext context) {
-                //     return Container(
-                //       padding: const EdgeInsets.symmetric(
-                //           vertical: 20, horizontal: 16),
-                //       child: Column(
-                //         mainAxisSize: MainAxisSize.min,
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           const Text(
-                //             'Select the truck',
-                //             style: TextStyle(
-                //               fontSize: 18,
-                //               fontWeight: FontWeight.bold,
-                //             ),
-                //           ),
-                //           const SizedBox(height: 10),
-                //           const Divider(
-                //             thickness: 1.0,
-                //             height: 1.0,
-                //           ),
-                //           Card(
-                //             child: ListTile(
-                //               leading: SvgPicture.asset('assets/truck.svg',
-                //                   width: 50, height: 50),
-                //               title: const Text(
-                //                 'Truck Name',
-                //                 style: TextStyle(fontSize: 18),
-                //               ),
-                //               subtitle: const Text('Up to 100 Kg'),
-                //               trailing: const Text('\$1000'),
-                //               onTap: () {
-                //                 // Handle selection of the first truck
-                //               },
-                //             ),
-                //           ),
-                //           const SizedBox(height: 10),
-                //           Card(
-                //             child: ListTile(
-                //               leading: Image.asset('assets/truck2.png',
-                //                   width: 50, height: 50),
-                //               title: const Text(
-                //                 'Truck Name',
-                //                 style: TextStyle(fontSize: 18),
-                //               ),
-                //               subtitle: const Text('Up to 50 Kg'),
-                //               trailing: const Text('\$1500'),
-                //               onTap: () {
-                //                 // Handle selection of the second truck
-                //               },
-                //             ),
-                //           ),
-                //           const SizedBox(height: 20),
-                //           Align(
-                //             alignment: Alignment.center,
-                //             child: CustomButton(
-                //               hint: "Continue",
-                //               onPress: () {
-                //                 showModalBottomSheet(
-                //                   context: context,
-                //                   builder: (BuildContext context) {
-                //                     return Container(
-                //                       padding: const EdgeInsets.symmetric(
-                //                           vertical: 20, horizontal: 16),
-                //                       child: Column(
-                //                         mainAxisSize: MainAxisSize.min,
-                //                         crossAxisAlignment:
-                //                             CrossAxisAlignment.start,
-                //                         children: [
-                //                           Center(
-                //                             child: Column(
-                //                               children: [
-                //                                 const Text(
-                //                                   'Find the Driver',
-                //                                   style: TextStyle(
-                //                                     fontSize: 18,
-                //                                     fontWeight: FontWeight.bold,
-                //                                   ),
-                //                                 ),
-                //                                 const SizedBox(height: 10),
-                //                                 const Divider(
-                //                                   thickness: 1.0,
-                //                                   height: 1.0,
-                //                                 ),
-                //                                 const SizedBox(height: 10),
-                //                                 Container(
-                //                                   decoration: BoxDecoration(
-                //                                       color:
-                //                                           Colors.grey.shade300,
-                //                                       shape: BoxShape.circle),
-                //                                   child: const Icon(
-                //                                     Icons.person,
-                //                                     size: 70,
-                //                                     color: Color(0xFF0000FF),
-                //                                   ),
-                //                                 ),
-                //                                 const SizedBox(height: 15),
-                //                                 const Text(
-                //                                     "Waiting for Driver Acceptance")
-                //                               ],
-                //                             ),
-                //                           ),
-                //                         ],
-                //                       ),
-                //                     );
-                //                   },
-                //                 );
-                //               },
-                //               borderRadius: BorderRadius.circular(5),
-                //               color: const Color(0xFF0000FF),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   },
-                // );
               },
               color: const Color(0xFF0000FF),
               borderRadius: BorderRadius.circular(10),
@@ -913,25 +768,5 @@ class _LocationDetailState extends State<LocationDetail> {
         );
       },
     );
-  }
-
-  Future<void> getPlaceDirection() async {
-    var initialPos = appData.pickupLocation;
-    var finalPos = appData.dropOffLocation;
-
-    var pickUpLatLng = LatLng(initialPos.latitude!, initialPos.longitude!);
-    var dropOffLatLng = LatLng(finalPos.latitude!, finalPos.longitude!);
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => ProgressDialog(message: "message"));
-
-    var details = await AssistantsMethod.obtainPlaceDirection(
-        pickUpLatLng, dropOffLatLng);
-
-    Navigator.pop(context);
-
-    print("This is Encoded Points: ${details!.encodedPoint}");
-    print(details.encodedPoint);
   }
 }

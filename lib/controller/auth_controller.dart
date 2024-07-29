@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../consts/firebase_consts.dart';
@@ -113,15 +114,15 @@ class AuthController extends GetxController {
     }
   }
 
-// validSnackBar(String message) {
-//   Get.snackbar(
-//     "Error",
-//     message,
-//     snackPosition: SnackPosition.BOTTOM,
-//     backgroundColor: const Color(0xFFD05045),
-//     colorText: Colors.white,
-//     borderRadius: 10,
-//     margin: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
-//   );
-// }
+validSnackBar(String message) {
+  Get.snackbar(
+    "Error",
+    message,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: const Color(0xFFD05045),
+    colorText: Colors.white,
+    borderRadius: 10,
+    margin: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+  );
+}
 }

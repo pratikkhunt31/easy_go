@@ -43,7 +43,7 @@ class _CompleteState extends State<Complete> {
 
         return filteredRides;
       } else {
-        print('No rides found for the current user.');
+        // print('No rides found for the current user.');
         return [];
       }
     });

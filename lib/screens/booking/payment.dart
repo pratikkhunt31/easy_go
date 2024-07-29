@@ -92,7 +92,7 @@ class _PaymentState extends State<Payment> {
       required String orderTitle}) async {
     if (orderId != null) {
       var options = {
-        "key": "rzp_test_gAsXTMY3aoa4io",
+        "key": "rzp_live_2rwQU48M3FIa72",
         "name": orderTitle,
         'prefill': {'contact': userPhoneNumber, 'email': userEmail},
         "order_id": orderId,

@@ -44,7 +44,7 @@ class _CancelState extends State<Cancel> {
 
         return filteredRides;
       } else {
-        print('No rides found for the current user.');
+        // print('No rides found for the current user.');
         return [];
       }
     });

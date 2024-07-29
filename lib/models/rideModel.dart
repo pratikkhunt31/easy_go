@@ -65,24 +65,7 @@ Future<String?> saveRideRequest({
     await rideRequestRef.set(rideInfoMap);
     String rideRequestId = rideRequestRef.key!;
 
-    // Notify relevant drivers
-    // DatabaseReference driversRef =
-    //     FirebaseDatabase.instance.ref().child('drivers');
-    // driversRef.once().then((DatabaseEvent event) {
-    //   Map<String, dynamic> drivers =
-    //       Map<String, dynamic>.from(event.snapshot.value as Map);
-    //   drivers.forEach((key, value) {
-    //     if (value['vehicleType'] == vType && value['is_online'] == true) {
-    //       DatabaseReference driverRef =
-    //           driversRef.child(key).child('newRideRequests');
-    //       driverRef.child(rideRequestId).set(true);
-    //     }
-    //   });
-    // });
     return rideRequestId;
-
-    // await rideRequestRef.child("Ride Request").set(rideInfoMap);
-    successSnackBar("Ride request sent successfully.");
   } catch (e) {
     print("Failed to send ride request: $e");
     // Optionally, handle the error further, such as showing a message to the user
@@ -90,70 +73,24 @@ Future<String?> saveRideRequest({
   return null;
 }
 
+// Notify relevant drivers
+// DatabaseReference driversRef =
+//     FirebaseDatabase.instance.ref().child('drivers');
+// driversRef.once().then((DatabaseEvent event) {
+//   Map<String, dynamic> drivers =
+//       Map<String, dynamic>.from(event.snapshot.value as Map);
+//   drivers.forEach((key, value) {
+//     if (value['vehicleType'] == vType && value['is_online'] == true) {
+//       DatabaseReference driverRef =
+//           driversRef.child(key).child('newRideRequests');
+//       driverRef.child(rideRequestId).set(true);
+//     }
+//   });
+// });
+
+// await rideRequestRef.child("Ride Request").set(rideInfoMap);
+
 var driverDetails = {}.obs;
-
-void fetchDriverDetails() async {
-  if (currentUser == null) {
-    print("No current user is logged in.");
-    return;
-  }
-
-  DatabaseReference rideRequestsRef =
-      FirebaseDatabase.instance.ref().child('Ride Request');
-  rideRequestsRef.once().then((DatabaseEvent event) {
-    if (event.snapshot.value != null) {
-      Map<String, dynamic> allRideRequests =
-          Map<String, dynamic>.from(event.snapshot.value as Map);
-
-      for (var entry in allRideRequests.entries) {
-        var rideRequest = Map<String, dynamic>.from(entry.value);
-        if (rideRequest.containsKey('u_id') &&
-            rideRequest['u_id'] == currentUser!.uid) {
-          if (rideRequest.containsKey('driver_id')) {
-            String driverId = rideRequest['driver_id'] as String? ?? "";
-            if (driverId.isNotEmpty && driverId != "waiting") {
-              // If a driver ID is found and it's not "waiting"
-              return driverId;
-            }
-            // Assuming you only want the first matching request
-            break;
-          }
-        }
-      }
-    }
-  }).catchError((error) {
-    print("Failed to fetch driver details: $error");
-  });
-}
-
-Future<String?> fetchDriverId() async {
-  DatabaseReference rideRequestRef =
-      FirebaseDatabase.instance.ref().child("Ride Request");
-
-  try {
-    DatabaseEvent event = await rideRequestRef.once();
-    DataSnapshot snapshot = event.snapshot;
-
-    if (snapshot.exists && snapshot.value is Map) {
-      Map<dynamic, dynamic> rideRequests =
-          snapshot.value as Map<dynamic, dynamic>;
-      if (rideRequests.isNotEmpty) {
-        String driverId = rideRequests['driver_id'] as String? ?? "";
-        if (driverId.isNotEmpty && driverId != "waiting") {
-          // If a driver ID is found and it's not "waiting"
-          return driverId;
-        }
-      }
-      // return rideRequests['driver_id'];
-    } else {
-      print("No ride requests found or invalid data format.");
-    }
-  } catch (e) {
-    print("Error fetching driver ID: $e");
-    return null;
-  }
-  return null;
-}
 
 class Ride {
   final String rideId;
@@ -171,24 +108,26 @@ class Ride {
   final LatLng dropOffLatLng;
   final LatLng dLatLng;
   final String goods;
+  final String createdAt;
 
-  Ride(
-      {
-        required this.rideId,
-        required this.dropOffAddress,
-      required this.pickUpAddress,
-      required this.senderName,
-      required this.senderPhone,
-      required this.receiverName,
-      required this.receiverPhone,
-      required this.amount,
-      required this.distance,
-      required this.time,
-      required this.isStarted,
-      required this.pickUpLatLng,
-      required this.dropOffLatLng,
-      required this.dLatLng,
-      required this.goods});
+  Ride({
+    required this.rideId,
+    required this.dropOffAddress,
+    required this.pickUpAddress,
+    required this.senderName,
+    required this.senderPhone,
+    required this.receiverName,
+    required this.receiverPhone,
+    required this.amount,
+    required this.distance,
+    required this.time,
+    required this.isStarted,
+    required this.pickUpLatLng,
+    required this.dropOffLatLng,
+    required this.dLatLng,
+    required this.goods,
+    required this.createdAt,
+  });
 
   factory Ride.fromMap(String rideRequestId, Map<String, dynamic> data) {
     return Ride(
@@ -216,6 +155,7 @@ class Ride {
         double.parse(data['d_location']['longitude']),
       ),
       goods: data['goods'],
+      createdAt: data['created_at'] ?? '',
     );
   }
 }

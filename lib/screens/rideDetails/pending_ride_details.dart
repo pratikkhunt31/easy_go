@@ -24,6 +24,7 @@ class PendingRideDetails extends StatefulWidget {
 
 class _PendingRideDetailsState extends State<PendingRideDetails> {
   final Completer<GoogleMapController> controller = Completer();
+  GoogleMapController? mapController;
   bool isLoading = true;
   late LatLng sourceLocation;
   late LatLng destinationLocation;
@@ -101,9 +102,18 @@ class _PendingRideDetailsState extends State<PendingRideDetails> {
               double.parse(rideData['d_location']['longitude']),
             );
           });
+          moveDriverMarker();
         }
       }
     });
+  }
+
+  void moveDriverMarker() {
+    if (mapController != null && driverLocation != null) {
+      mapController?.animateCamera(
+        CameraUpdate.newLatLng(driverLocation!),
+      );
+    }
   }
 
   void getCurrentLocation() async {
@@ -120,7 +130,7 @@ class _PendingRideDetailsState extends State<PendingRideDetails> {
       googleMapController.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            zoom: 13.5,
+            zoom: 18,
             target: LatLng(newLoc.latitude!, newLoc.longitude!),
           ),
         ),
@@ -215,6 +225,7 @@ class _PendingRideDetailsState extends State<PendingRideDetails> {
       appBar: AppBar(
         title: Text("Ride Details"),
         backgroundColor: const Color(0xFF0000FF),
+        elevation: 0,
       ),
       body: Container(
         child: Column(
@@ -234,7 +245,7 @@ class _PendingRideDetailsState extends State<PendingRideDetails> {
                     GoogleMap(
                   initialCameraPosition: CameraPosition(
                       target: LatLng(
-                          driverLocation.latitude, driverLocation.longitude),
+                          widget.ride.pickUpLatLng.latitude, widget.ride.pickUpLatLng.longitude),
                       zoom: 18),
                   polylines: {
                     Polyline(

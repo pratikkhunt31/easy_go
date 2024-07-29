@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../consts/firebase_consts.dart';
@@ -15,6 +16,7 @@ class Pending extends StatefulWidget {
 }
 
 class _PendingState extends State<Pending> {
+
   Stream<List<Ride>> getPendingRides() async* {
     if (currentUser == null) {
       print("User is not logged in");
@@ -41,7 +43,11 @@ class _PendingState extends State<Pending> {
             filteredRides.add(Ride.fromMap(key, rideData));
           }
         });
-
+        filteredRides.sort((a, b) {
+          DateTime createdAtA = DateFormat('dd-MM-yyyy HH:mm:ss').parse(a.createdAt);
+          DateTime createdAtB = DateFormat('dd-MM-yyyy HH:mm:ss').parse(b.createdAt);
+          return createdAtB.compareTo(createdAtA); // Sort in descending order
+        });
         return filteredRides;
       } else {
         print('No rides found for the current user.');

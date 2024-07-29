@@ -197,15 +197,15 @@ class _NumberScreenState extends State<NumberScreen> {
                                       // if (!authController.isValidPhoneNumber(
                                       //     phoneController.text)) {
                                       //   // Show an error Snack bar if the phone number is invalid
-                                      //   authController.errorSnackBarNew(
+                                      //   authController.validSnackBar(
                                       //       "Invalid phone number. Please enter a valid 10-digit number.");
                                       //   return;
                                       // }
                                       // Proceed with login
 
+                                      _checkUserDataAndNavigate();
                                       // print(
                                       //     "+${selectedCountry.phoneCode + phoneController.text.trim()}");
-                                      _checkUserDataAndNavigate();
                                     } catch (e) {
                                       validSnackBar(
                                           "Error validating phone number: $e");

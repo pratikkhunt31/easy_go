@@ -78,33 +78,6 @@ class ContactDetailsPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Row(
-            //   children: [
-            //     const Icon(
-            //       Icons.location_on,
-            //       color: Color(0xFF0000FF),
-            //       size: 30,
-            //     ),
-            //     const SizedBox(width: 10),
-            //     const Text(
-            //       "Address:",
-            //       style: TextStyle(
-            //         fontSize: 20,
-            //         fontWeight: FontWeight.w600,
-            //       ),
-            //     ),
-            //     const SizedBox(width: 10),
-            //     Expanded(
-            //       child: Text(
-            //         "123 Main Street, City, Country",
-            //         style: const TextStyle(
-            //           fontSize: 18,
-            //           color: Colors.grey,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
           ],
         ),
       ),

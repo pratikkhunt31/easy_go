@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:easy_go/controller/driver_controller.dart';
-import 'package:easy_go/screens/home_view.dart';
+import 'package:easy_go/screens/booking/bookings.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../../consts/firebase_consts.dart';
 import '../../widget/custom_widget.dart';
-import '../home/home_screen.dart';
 
 class Driver extends StatefulWidget {
   final int amountToBePaid;
@@ -30,7 +30,8 @@ class _DriverState extends State<Driver> {
   Map<dynamic, dynamic>? driverData;
   bool isLoading = true;
   late Razorpay razorpay;
-  Timer? driverFindingTimer;
+
+  // Timer? driverFindingTimer;
   Timer? countdownTimer;
   int remainingTime = 300;
 
@@ -46,18 +47,19 @@ class _DriverState extends State<Driver> {
         .child('Ride Request')
         .child(widget.rideRequestId);
 
-    Future.delayed(Duration.zero, () {
-      showDriverFindingBottomSheet();
-    });
+    // Future.delayed(Duration.zero, () {
+    //   showDriverFindingBottomSheet();
+    // });
     // getDriverData();
     listenForDriverId();
+    startCountdownTimer();
     // startDriverFindingTimer();
   }
 
   @override
   void dispose() {
     razorpay.clear();
-    driverFindingTimer?.cancel();
+    // driverFindingTimer?.cancel();
     countdownTimer?.cancel();
     super.dispose();
   }
@@ -88,6 +90,7 @@ class _DriverState extends State<Driver> {
         String? driverId = rideRequestData['driver_id'];
         if (driverId != null && driverId != 'waiting') {
           getDriverData(driverId);
+          countdownTimer?.cancel();
         }
       }
     });
@@ -107,41 +110,44 @@ class _DriverState extends State<Driver> {
             isLoading = false;
           });
         }
-        Navigator.pop(context); // Close the bottom sheet
-        showDriverDetailsBottomSheet();
+        // Navigator.pop(context); // Close the bottom sheet
+        // showDriverDetailsBottomSheet();
       } else {
         print("No driver data found or invalid data format.");
       }
     });
   }
 
-  void startCountdownTimer(StateSetter setState) {
+  Future<void> cancelRide(String rideId) async {
+
+    DatabaseReference rideRequest = FirebaseDatabase.instance
+        .ref()
+        .child('Ride Request')
+        .child(rideId);
+    await rideRequest.update({
+      'status': "cancel",
+    });
+  }
+
+  void startCountdownTimer() {
     countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (!mounted) {
-        timer.cancel(); // Cancel the timer if the widget is not mounted
+        timer.cancel();
         return;
       }
 
       if (remainingTime <= 0) {
         timer.cancel();
-        if (mounted) {
-          setState(() {
-            remainingTime = 0;
-          });
-        }
         rideRequestRef.remove();
-        Navigator.pop(context); // Close the bottom sheet
-        Navigator.pop(context); // Go back to the previous screen
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Driver not assigned. Please make a new request."),
           backgroundColor: Colors.red,
         ));
       } else {
-        if (mounted) {
-          setState(() {
-            remainingTime--;
-          });
-        }
+        setState(() {
+          remainingTime--;
+        });
       }
     });
   }
@@ -156,7 +162,8 @@ class _DriverState extends State<Driver> {
   }) async {
     if (orderId != null) {
       var options = {
-        "key": "rzp_test_gAsXTMY3aoa4io",
+        "key": "rzp_live_2rwQU48M3FIa72",
+        // "key": "rzp_test_gAsXTMY3aoa4io",
         "name": orderTitle,
         'prefill': {'contact': userPhoneNumber, 'email': userEmail},
         "order_id": orderId,
@@ -184,7 +191,8 @@ class _DriverState extends State<Driver> {
       orderId = data['order_id'];
 
       var options = {
-        "key": "rzp_test_gAsXTMY3aoa4io",
+        "key": "rzp_live_2rwQU48M3FIa72",
+        // "key": "rzp_test_gAsXTMY3aoa4io",
         "name": orderTitle,
         'prefill': {'contact': userPhoneNumber, 'email': userEmail},
         "order_id": orderId,
@@ -224,19 +232,13 @@ class _DriverState extends State<Driver> {
       backgroundColor: Colors.green,
     ));
 
-    // Navigator.pop(context);
-    // Navigator.pop(context);
-    // Navigator.pop(context);
     Future.delayed(Duration(milliseconds: 300), () {
       // Close the bottom sheet
-      Navigator.of(context).pop();
-      // Navigate to the home screen
-      // Navigator.of(context).pushAndRemoveUntil(
-      //   MaterialPageRoute(builder: (context) => HomeScreen()),
-      //       (Route<dynamic> route) => false,
-      // );
-      Navigator.pop(context);
-      Navigator.pop(context);
+      // Navigator.of(context).pop();
+      // Navigator.pop(context);
+      // Navigator.pop(context);
+      // Navigator.pop(context);
+      Get.offAll(() => Bookings());
     });
   }
 
@@ -270,74 +272,54 @@ class _DriverState extends State<Driver> {
     });
   }
 
-  void showDriverFindingBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            if (countdownTimer == null) {
-              startCountdownTimer(
-                  setState); // Start countdown timer when bottom sheet is shown
-            }
-            return WillPopScope(
-              onWillPop: () async => false, // Disable back button
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(
-                      color: Color(0xFF0000FF),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Text("Finding a driver..."),
-                    const SizedBox(height: 16.0),
-                    Text(
-                      "Time remaining: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    CustomButton(
-                      hint: "Cancel Ride",
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
-                      onPress: () {
-                        // Cancel the ride request and go back to the previous screen
-                        rideRequestRef.remove();
-                        Navigator.pop(context); // Close the bottom sheet
-                        Navigator.pop(
-                            context); // Go back to the previous screen
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
 
-  void showDriverDetailsBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Driver"),
+        backgroundColor: const Color(0xFF0000FF),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (driverData == null) ...[
-                CircularProgressIndicator(),
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.ballClipRotateMultiple,
+                    colors: [Color(0xFF0000FF)],
+                    strokeWidth: 2,
+                  ),
+                ),
                 const SizedBox(height: 16.0),
-                Text("Driver details not available yet."),
+                Text("Finding a driver..."),
+                const SizedBox(height: 16.0),
+                Text(
+                  "Time remaining: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                CustomButton(
+                  hint: "Cancel Ride",
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                  onPress: () async {
+                    await rideRequestRef.remove();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Ride cancelled successfully"),
+                      backgroundColor: Colors.red,
+                    ));
+                    Navigator.pop(context);
+                  },
+                ),
               ] else ...[
                 Text(
                   "Driver Details",
@@ -377,32 +359,146 @@ class _DriverState extends State<Driver> {
                   hint: "Cancel Ride",
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(10),
-                  onPress: () {
+                  onPress: () async {
                     // Cancel the ride request and go back to the previous screen
-                    rideRequestRef.remove();
-                    Navigator.pop(context);
+                    await cancelRide(widget.rideRequestId);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Ride cancelled successfully"),
+                      backgroundColor: Colors.red,
+                    ));
                     Navigator.pop(context); // Go back to the previous screen
                   },
                 ),
               ],
             ],
           ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Driver"),
-        backgroundColor: const Color(0xFF0000FF),
-      ),
-      body: Center(child: Container()), // Show loading indicator
+        ),
+      ), // Show loading indicator
     );
   }
 }
+
+// void showDriverFindingBottomSheet() {
+//   showModalBottomSheet(
+//     context: context,
+//     isDismissible: false,
+//     builder: (context) {
+//       return StatefulBuilder(
+//         builder: (BuildContext context, StateSetter setState) {
+//           if (countdownTimer == null) {
+//             startCountdownTimer(
+//                 setState); // Start countdown timer when bottom sheet is shown
+//           }
+//           return WillPopScope(
+//             onWillPop: () async => false, // Disable back button
+//             child: Padding(
+//               padding: const EdgeInsets.all(16.0),
+//               child: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   CircularProgressIndicator(
+//                     color: Color(0xFF0000FF),
+//                   ),
+//                   const SizedBox(height: 16.0),
+//                   Text("Finding a driver..."),
+//                   const SizedBox(height: 16.0),
+//                   Text(
+//                     "Time remaining: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}",
+//                     style: const TextStyle(
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                   const SizedBox(height: 16.0),
+//                   CustomButton(
+//                     hint: "Cancel Ride",
+//                     color: Colors.red,
+//                     borderRadius: BorderRadius.circular(10),
+//                     onPress: () {
+//                       // Cancel the ride request and go back to the previous screen
+//                       rideRequestRef.remove();
+//                       Navigator.pop(context); // Close the bottom sheet
+//                       Navigator.pop(
+//                           context); // Go back to the previous screen
+//                     },
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         },
+//       );
+//     },
+//   );
+// }
+//
+// void showDriverDetailsBottomSheet() {
+//   showModalBottomSheet(
+//     context: context,
+//     isDismissible: false,
+//     builder: (context) {
+//       return Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             if (driverData == null) ...[
+//               CircularProgressIndicator(),
+//               const SizedBox(height: 16.0),
+//               Text("Driver details not available yet."),
+//             ] else ...[
+//               Text(
+//                 "Driver Details",
+//                 style: const TextStyle(
+//                   fontSize: 18,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               Divider(),
+//               const SizedBox(height: 8.0),
+//               Text(
+//                 "Name: ${driverData!['name'] ?? 'N/A'}",
+//                 style: const TextStyle(
+//                   fontSize: 18,
+//                   // fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               const SizedBox(height: 8.0),
+//               CustomButton(
+//                 hint: "Proceed to Payment",
+//                 color: Color(0xFF0000FF),
+//                 borderRadius: BorderRadius.circular(10),
+//                 onPress: () async {
+//                   await Future.delayed(Duration(seconds: 2));
+//                   openCheckout(
+//                     userEmail: currentUserInfo?.email.toString() ?? "",
+//                     userPhoneNumber: currentUserInfo?.phone.toString() ?? "",
+//                     amount: widget.amountToBePaid,
+//                     driverRazorpayAccId: driverData!["account_id"],
+//                     orderTitle: "Pay Securely",
+//                     orderId: null,
+//                   );
+//                 },
+//               ),
+//               const SizedBox(height: 16.0),
+//               CustomButton(
+//                 hint: "Cancel Ride",
+//                 color: Colors.red,
+//                 borderRadius: BorderRadius.circular(10),
+//                 onPress: () {
+//                   // Cancel the ride request and go back to the previous screen
+//                   rideRequestRef.remove();
+//                   Navigator.pop(context);
+//                   Navigator.pop(context); // Go back to the previous screen
+//                 },
+//               ),
+//             ],
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
 
 // return Scaffold(
 // appBar: AppBar(

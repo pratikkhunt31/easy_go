@@ -3,7 +3,6 @@ import 'package:easy_go/dataHandler/appData.dart';
 import 'package:easy_go/network_dependency.dart';
 import 'package:easy_go/screens/home_view.dart';
 import 'package:easy_go/screens/login/num_screen.dart';
-import 'package:easy_go/screens/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

@@ -168,6 +168,7 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
         appBar: AppBar(
           title: Text("Location Error"),
           backgroundColor: const Color(0xFF0000FF),
+          elevation: 0,
         ),
         body: Center(
           child: Column(
@@ -201,6 +202,7 @@ class _PickUpMapScreenState extends State<PickUpMapScreen> {
       appBar: AppBar(
         title: Text("Location"),
         backgroundColor: const Color(0xFF0000FF),
+        elevation: 0,
       ),
       body: Stack(
         children: [

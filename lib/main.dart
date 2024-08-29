@@ -1,3 +1,4 @@
+import 'package:easy_go/controller/notification.dart';
 import 'package:easy_go/dataHandler/appData.dart';
 import 'package:easy_go/network_dependency.dart';
 import 'package:easy_go/screens/home_view.dart';
@@ -17,6 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await FNotification().initNotification();
   Get.put(AppData());
   Get.put(LocationController());
 

@@ -1,5 +1,6 @@
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ Future<String?> saveRideRequest({
 
   var pickUp = appData.pickupLocation;
   var dropOff = appData.dropOffLocation;
+  FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
   Map<String, String> pickUpLocMap = {
     'latitude': pickUp.latitude.toString(),
@@ -37,6 +39,8 @@ Future<String?> saveRideRequest({
 
   String formattedDateTime =
       DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+
+  final fCMToken = await fMessaging.getToken();
 
   Map<String, dynamic> rideInfoMap = {
     'driver_id': "waiting",
@@ -56,7 +60,8 @@ Future<String?> saveRideRequest({
     'receiver_name': rName,
     'receiver_phone': rNumber,
     'pickUp_address': pickUp.placeName,
-    'dropOff_address': dropOff.placeName
+    'dropOff_address': dropOff.placeName,
+    'user_token': fCMToken,
   };
 
   try {

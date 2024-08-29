@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:easy_go/widget/custom_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -66,11 +67,15 @@ class AuthController extends GetxController {
   Future<void> saveUserInfo(String name, String email, String phone) async {
     try {
       if (currentUser != null) {
+        FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+        final fCMToken = await fMessaging.getToken();
+
         Map users = {
           'id': currentUser!.uid,
           'name': name.trim(),
           'email': email.trim(),
           'phone': phone.trim(),
+          'fcmToken': fCMToken,
         };
 
         DatabaseReference database = FirebaseDatabase.instance.ref();

@@ -152,6 +152,7 @@ class _DropOffMapScreenState extends State<DropOffMapScreen> {
       appBar: AppBar(
         title: Text("Location"),
         backgroundColor: const Color(0xFF0000FF),
+        elevation: 0,
       ),
       body: Stack(
         children: [

@@ -2,14 +2,14 @@ import 'package:easy_go/controller/location_controller.dart';
 import 'package:easy_go/screens/home/select_location.dart';
 import 'package:easy_go/screens/location/location_detail.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:page_transition/page_transition.dart';
-
 import '../../consts/firebase_consts.dart';
 import '../../controller/shared_pref.dart';
-import '../../models/rideModel.dart';
 import '../../widget/custom_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPref.getLocation()
         .then((value) => LocationController.instance.setCity(value));
     requestLocationPermission();
+    checkNotificationPermission();
+    updateFcmToken();
+    checkForUpdate();
   }
 
   Future<void> requestLocationPermission() async {
@@ -36,39 +39,120 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Stream<List<Ride>> getPendingRides() async* {
-    if (currentUser == null) {
-      print("User is not logged in");
-      yield [];
-      return;
-    }
+  void checkNotificationPermission() async {
+    PermissionStatus permission = await Permission.notification.status;
+    if (permission.isDenied || permission.isPermanentlyDenied) {
+      // Request notification permissions if not granted or permanently denied
+      permission = await Permission.notification.request();
 
-    DatabaseReference rideRequestRef =
-        FirebaseDatabase.instance.ref().child('Ride Request');
-
-    yield* rideRequestRef
-        .orderByChild('u_id')
-        .equalTo(currentUser!.uid)
-        .onValue
-        .map((event) {
-      if (event.snapshot.exists) {
-        Map<String, dynamic> rides =
-            Map<String, dynamic>.from(event.snapshot.value as Map);
-        List<Ride> filteredRides = [];
-
-        rides.forEach((key, value) {
-          Map<String, dynamic> rideData = Map<String, dynamic>.from(value);
-          if (rideData['status'] == 'pending') {
-            filteredRides.add(Ride.fromMap(key, rideData));
-          }
-        });
-
-        return filteredRides;
+      if (permission.isGranted) {
+        // Permission granted
+        // validSnackBar('Notification permission granted.');
       } else {
-        print('No rides found for the current user.');
-        return [];
+        // Handle the case where the user denies or permanently denies permission
+        validSnackBar('You have to enable notification permission.');
       }
-    });
+    } else {}
+  }
+
+  Future<void> updateFcmToken() async {
+    try {
+      if (currentUser != null) {
+        FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+        final fCMToken = await fMessaging.getToken();
+
+        DatabaseReference database = FirebaseDatabase.instance.ref();
+        await database
+            .child('users')
+            .child(currentUser!.uid)
+            .update({'fcmToken': fCMToken});
+      } else {
+        // print("User is not logged in");
+      }
+    } catch (e) {
+      print("Failed to update FCM token: $e");
+    }
+  }
+
+  // Future<void> checkForUpdate() async {
+  //   InAppUpdate.checkForUpdate().then((value) {
+  //     setState(() {
+  //       if (value.updateAvailability == UpdateAvailability.updateAvailable) {
+  //         update();
+  //       }
+  //     });
+  //   }).catchError((e) {});
+  // }
+  //
+  // void update() async {
+  //   await InAppUpdate.startFlexibleUpdate();
+  //   InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {});
+  // }
+  Future<void> checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        showUpdateDialog();
+      }
+    } catch (e) {
+      // Handle the error appropriately, if needed
+      // showErrorSnackBar('Failed to check for updates. Please try again later.');
+    }
+  }
+
+  void showUpdateDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Available'),
+          content: Text('A new version of the app is available. Please update to continue using the app.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Later'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Update'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                performUpdate();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> performUpdate() async {
+    try {
+      await InAppUpdate.startFlexibleUpdate();
+      await InAppUpdate.completeFlexibleUpdate();
+      showSuccessSnackBar('App updated successfully.');
+    } catch (e) {
+      showErrorSnackBar('Failed to update the app. Please try again later.');
+    }
+  }
+
+  void showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  void showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
@@ -263,8 +347,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child:
-                                      LocationDetail(vType: "Suzuki Pickup"),
+                                      child: LocationDetail(
+                                          vType: "Suzuki Pickup"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -280,8 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child:
-                                      LocationDetail(vType: "Bolero"),
+                                      child: LocationDetail(vType: "Bolero"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -301,8 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child:
-                                      LocationDetail(vType: "e-Tempo"),
+                                      child: LocationDetail(vType: "e-Tempo"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -318,8 +400,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child:
-                                      LocationDetail(vType: "Auto Rickshaw"),
+                                      child: LocationDetail(
+                                          vType: "Auto Rickshaw"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -340,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context,
                                     PageTransition(
                                       child:
-                                      LocationDetail(vType: "e-Rickshaw"),
+                                          LocationDetail(vType: "e-Rickshaw"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );
@@ -356,8 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     PageTransition(
-                                      child:
-                                      LocationDetail(vType: "Eicher"),
+                                      child: LocationDetail(vType: "Eicher"),
                                       type: PageTransitionType.bottomToTop,
                                     ),
                                   );

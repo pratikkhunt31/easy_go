@@ -20,6 +20,7 @@ class _EditProfileState extends State<EditProfile> {
             fontSize: 25,
           ),
         ),
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -27,7 +28,6 @@ class _EditProfileState extends State<EditProfile> {
           },
         ),
         backgroundColor: const Color(0xFF0000FF),
-        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.check_sharp),

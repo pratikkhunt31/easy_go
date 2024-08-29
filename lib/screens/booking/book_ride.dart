@@ -90,6 +90,7 @@ class _BookRideState extends State<BookRide> {
       appBar: AppBar(
         title: Text("Ride Details"),
         backgroundColor: const Color(0xFF0000FF),
+        elevation: 0,
       ),
       body: Container(
         color: Color(0xA4A4A4A2),

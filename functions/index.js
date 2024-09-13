@@ -45,8 +45,9 @@ exports.onUserProfileUpdate = functions.database
             title: 'Profile Updated',
             body: `Your ${field} was updated to ${newValue}.`,
           },
+          token: fcmToken
         };
-        await admin.messaging().sendToDevice(fcmToken, payload);
+        await admin.messaging().send(payload);
         console.log(`Notification sent to user ${userId}`);
       } else {
         console.log(`No FCM token available for user ${userId}`);
@@ -75,10 +76,10 @@ exports.onUserNumberUpdate = functions.database
           notification: {
             title: 'Profile Updated',
             body: `Your ${field} was updated to ${newValue}.`,
-
           },
+          token: fcmToken
         };
-        await admin.messaging().sendToDevice(fcmToken, payload);
+        await admin.messaging().send(payload);
         console.log(`Notification sent to user ${userId}`);
       } else {
         console.log(`No FCM token available for user ${userId}`);

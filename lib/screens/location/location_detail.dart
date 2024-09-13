@@ -202,8 +202,8 @@ class _LocationDetailState extends State<LocationDetail> {
                 size: 35,
                 color: Colors.green,
               ),
-              title: const Text(
-                'Pick up Details',
+              title: Text(
+                'pickUpDetails'.tr,
                 style: TextStyle(color: Colors.black),
               ),
               children: <Widget>[
@@ -227,7 +227,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       },
                       controller: pickUpLocController,
                       decoration: InputDecoration(
-                        labelText: "Location",
+                        labelText: "currentLocation".tr,
                         labelStyle: const TextStyle(color: Colors.black),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -257,7 +257,7 @@ class _LocationDetailState extends State<LocationDetail> {
                     // mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       LocationButton(
-                        label: "Use Current Location",
+                        label: "userCurrentLocation".tr,
                         icon: Icons.my_location,
                         onPress: () async {
                           showDialog(
@@ -278,7 +278,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       ),
                       const SizedBox(width: 7),
                       LocationButton(
-                        label: "Locate On The Map",
+                        label: "locateMap".tr,
                         icon: Icons.map_sharp,
                         onPress: () async {
                           final selectedLocation = await Navigator.push(
@@ -306,23 +306,23 @@ class _LocationDetailState extends State<LocationDetail> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
-                            "Sender's Detail :-",
+                            "pickUpDetails".tr,
                             style: TextStyle(fontSize: 16),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
-                        labelText: "Name",
+                        labelText: "name".tr,
                         controller: sNameController,
                         icon: Icons.person,
                         isNum: false,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
-                        labelText: "Mobile Number",
+                        labelText: "mobile".tr,
                         controller: sNumberController,
                         icon: Icons.call,
                         isNum: true,
@@ -331,7 +331,7 @@ class _LocationDetailState extends State<LocationDetail> {
 
                       const SizedBox(height: 10),
                       DetailWidget(
-                        labelText: "Enter Good's Type",
+                        labelText: "goodsType".tr,
                         controller: goodsController,
                         icon: Icons.insights_outlined,
                         isNum: false,
@@ -347,8 +347,8 @@ class _LocationDetailState extends State<LocationDetail> {
                               });
                             },
                           ),
-                          const Text(
-                            'For loading from 1st floor and above',
+                          Text(
+                            'firstFloorLoad'.tr,
                             style: TextStyle(fontSize: 14),
                           ),
                         ],
@@ -372,8 +372,8 @@ class _LocationDetailState extends State<LocationDetail> {
                 size: 35,
                 color: Colors.red,
               ),
-              title: const Text(
-                'Drop off Details',
+              title: Text(
+                'receiverDetails'.tr,
                 style: TextStyle(color: Colors.black),
               ),
               children: <Widget>[
@@ -397,7 +397,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       },
                       controller: dropOffLocController,
                       decoration: InputDecoration(
-                        labelText: "Location",
+                        labelText: "location".tr,
                         labelStyle: const TextStyle(color: Colors.black),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -422,7 +422,7 @@ class _LocationDetailState extends State<LocationDetail> {
                     // mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       LocationButton(
-                        label: "Use Current Location",
+                        label: "currentLocation".tr,
                         icon: Icons.my_location,
                         onPress: () async {
                           showDialog(
@@ -443,7 +443,7 @@ class _LocationDetailState extends State<LocationDetail> {
                       ),
                       const SizedBox(width: 5),
                       LocationButton(
-                        label: "Locate On The Map",
+                        label: "locateMap".tr,
                         icon: Icons.map_sharp,
                         onPress: () async {
                           final selectedDropLocation = await Navigator.push(
@@ -473,23 +473,23 @@ class _LocationDetailState extends State<LocationDetail> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children:  [
                           Text(
-                            "Receiver's Detail :-",
+                            "receiverDetails".tr,
                             style: TextStyle(fontSize: 16),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
-                        labelText: "Name",
+                        labelText: "name".tr,
                         controller: rNameController,
                         icon: Icons.person,
                         isNum: false,
                       ),
                       const SizedBox(height: 10),
                       DetailWidget(
-                        labelText: "Mobile Number",
+                        labelText: "mobile".tr,
                         controller: rNumberController,
                         icon: Icons.call,
                         isNum: true,
@@ -497,13 +497,12 @@ class _LocationDetailState extends State<LocationDetail> {
                       const SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children: [
                           Icon(Icons.info_outline, size: 18),
                           SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              "Receiver wil receive OTP on this number "
-                              "to verify",
+                              "receiveReceiveOTP".tr,
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
@@ -521,7 +520,7 @@ class _LocationDetailState extends State<LocationDetail> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
             child: CustomButton(
-              hint: "Continue",
+              hint: "continue".tr,
               onPress: () {
                 if (pickUpLocController.text.isNotEmpty &&
                     dropOffLocController.text.isNotEmpty &&

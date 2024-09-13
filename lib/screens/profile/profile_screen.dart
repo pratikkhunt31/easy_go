@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_go/screens/booking/bookings.dart';
 import 'package:easy_go/screens/profile/edit_profile.dart';
 import 'package:easy_go/screens/profile/privacy.dart';
@@ -8,6 +10,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../consts/firebase_consts.dart';
 import '../../controller/auth_controller.dart';
 import '../../widget/custom_widget.dart';
@@ -28,18 +31,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isLoading = true;
   String appVersion = "";
 
+  final List locale = [
+    {'name': 'English', 'locale': Locale('en', 'US')},
+    {'name': 'Gujarati', 'locale': Locale('gu', 'IN')},
+  ];
+
   @override
   void initState() {
     super.initState();
     loadUserData();
     loadAppVersion();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    nameController.dispose();
-    emailController.dispose();
+    loadLanguageFromPreferences();
   }
 
   Future<void> loadUserData() async {
@@ -49,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .child('users')
           .child(currentUser!.uid);
       DataSnapshot snapshot = await userRef.get();
-      if (snapshot.exists) {
+      if (snapshot.exists && mounted) {
         Map<String, dynamic> userData =
             Map<String, dynamic>.from(snapshot.value as Map);
         setState(() {
@@ -149,14 +151,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  buildDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (builder) {
+          return AlertDialog(
+            title: Text('Choose a language'),
+            content: Container(
+              width: double.maxFinite,
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                            onTap: () {
+                              log('select language is: ${locale[index]['name']}');
+                              updateLanguage(locale[index]['locale']);
+                            },
+                            child: Text(locale[index]['name'])));
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      color: Colors.grey,
+                    );
+                  },
+                  itemCount: locale.length),
+            ),
+          );
+        });
+  }
+
+  Future<void> saveLanguageToPreferences(Locale locale) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', locale.languageCode);
+    await prefs.setString('countryCode', locale.countryCode ?? '');
+  }
+
+  Future<void> loadLanguageFromPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? languageCode = prefs.getString('languageCode');
+    String? countryCode = prefs.getString('countryCode');
+
+    if (languageCode != null) {
+      Locale savedLocale =
+          Locale(languageCode, countryCode!.isNotEmpty ? countryCode : null);
+      Get.updateLocale(savedLocale);
+    }
+  }
+
+  updateLanguage(Locale locale) {
+    Get.back();
+    saveLanguageToPreferences(locale);
+    Get.updateLocale(locale);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+    emailController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthController authController = Get.put(AuthController());
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Account",
+        title: Text(
+          'account'.tr,
           style: TextStyle(
             fontSize: 25,
           ),
@@ -225,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               SizedBox(height: 3),
                               Text(
-                                "Personal Info",
+                                "personalInfo".tr,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -243,25 +307,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    const Text(
-                      "Settings",
+                    Text(
+                      'settings'.tr,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // SettingItem(
-                    //   title: "Language",
-                    //   value: "Gujarati",
-                    //   icon: Ionicons.earth,
-                    //   bgColor: Colors.orange.shade100,
-                    //   iconColor: Colors.orange,
-                    //   onTap: () {},
-                    // ),
-                    // const SizedBox(height: 20),
+
                     SettingItem(
-                      title: "Your Bookings",
+                      title: "yourBookings".tr,
                       icon: Ionicons.receipt_sharp,
                       bgColor: Colors.red.shade100,
                       iconColor: Colors.red,
@@ -271,16 +327,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     SettingItem(
-                      title: "Privacy Policy",
-                      icon: Ionicons.text,
+                      title: "privacyPolicy".tr,
+                      icon: Icons.privacy_tip,
                       bgColor: Colors.blue.shade100,
                       iconColor: Colors.blue,
                       onTap: () {
                         Navigator.push(
                           context,
                           PageTransition(
-                            child:
-                            PrivacyPolicy(),
+                            child: PrivacyPolicy(),
                             type: PageTransitionType.bottomToTop,
                           ),
                         );
@@ -288,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     SettingItem(
-                      title: "Help & Support",
+                      title: "helpSupport".tr,
                       icon: Ionicons.help,
                       bgColor: Colors.green.shade100,
                       iconColor: Colors.green,
@@ -296,8 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.push(
                           context,
                           PageTransition(
-                            child:
-                            ContactDetailsPage(),
+                            child: ContactDetailsPage(),
                             type: PageTransitionType.bottomToTop,
                           ),
                         );
@@ -305,7 +359,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     SettingItem(
-                      title: "LogOut",
+                      title: "lang".tr,
+                      icon: Ionicons.language,
+                      bgColor: Colors.red.shade100,
+                      iconColor: Colors.red,
+                      onTap: () {
+                        buildDialog(context);
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    SettingItem(
+                      title: "logOut".tr,
                       icon: Ionicons.log_out_sharp,
                       bgColor: Colors.red.shade100,
                       iconColor: Colors.red,
@@ -324,8 +388,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "App Version",
+                          Text(
+                            "appVersion".tr,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey,

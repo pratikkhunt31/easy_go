@@ -88,7 +88,7 @@ class _BookRideState extends State<BookRide> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ride Details"),
+        title: Text("rideDetails".tr),
         backgroundColor: const Color(0xFF0000FF),
         elevation: 0,
       ),
@@ -196,7 +196,7 @@ class _BookRideState extends State<BookRide> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Fare Summary",
+                                  "summary".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
@@ -205,7 +205,7 @@ class _BookRideState extends State<BookRide> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Total Distance"),
+                                    Text("distance".tr),
                                     Text(
                                         "${totalDistance.toStringAsFixed(2)} km"),
                                   ],
@@ -215,7 +215,7 @@ class _BookRideState extends State<BookRide> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Trip Fare (incl. Toll)"),
+                                    Text('tripFare'.tr),
                                     Text("₹${farePrice}"),
                                   ],
                                 ),
@@ -235,7 +235,7 @@ class _BookRideState extends State<BookRide> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Net Fare"),
+                                    Text("netFare".tr),
                                     Text("₹${farePrice}"),
                                   ],
                                 ),
@@ -245,7 +245,7 @@ class _BookRideState extends State<BookRide> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "Amount Payable (rounded)",
+                                      "amountToPay".tr,
                                       style:
                                           TextStyle(fontWeight: FontWeight.bold),
                                     ),
@@ -277,7 +277,7 @@ class _BookRideState extends State<BookRide> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Goods",
+                                  "goods".tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold, fontSize: 16),
                                 ),
@@ -307,7 +307,7 @@ class _BookRideState extends State<BookRide> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: CustomButton(
-          hint: "Confirm Ride",
+          hint: "confirmRide".tr,
           onPress: () async {
             // print();
             // AssistantsMethod.getCurrentOnlineUserInfo();

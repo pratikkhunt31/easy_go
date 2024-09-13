@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Welcome to, Easy Go"),
+        title:  Text("welcomeMessage".tr),
         backgroundColor: const Color(0xFF0000FF),
         elevation: 0,
         // leading: null,
@@ -198,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    "Your Current Location",
+                                   Text(
+                                    "location".tr,
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   GestureDetector(
@@ -293,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Are you looking for Parcel Delivery?",
+                              "lookingParcelDeliver".tr,
                               style: TextStyle(fontSize: 18),
                             ),
                           ),
@@ -302,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               VehicleCard(
-                                vName: "Atul Shakti",
+                                vName: "atulShakti".tr,
                                 image: 'assets/images/atul-shakti.png',
                                 height: 150,
                                 onPress: () {
@@ -319,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(width: 10),
                               VehicleCard(
-                                vName: "Chhota Hathi",
+                                vName: "chotaHathi".tr,
                                 image: 'assets/images/mini.png',
                                 height: 110,
                                 onPress: () {
@@ -340,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               VehicleCard(
-                                vName: "Suzuki Pickup",
+                                vName: "suzuki".tr,
                                 image: 'assets/images/suzuki.png',
                                 height: 110,
                                 onPress: () {
@@ -357,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(width: 10),
                               // Add space between SizedBox widgets
                               VehicleCard(
-                                vName: "Bolero",
+                                vName: "bolero".tr,
                                 image: 'assets/images/bolero.png',
                                 height: 110,
                                 onPress: () {
@@ -377,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               VehicleCard(
-                                vName: "e-Tempo",
+                                vName: "eTempo".tr,
                                 image: 'assets/images/e-tempo.png',
                                 height: 110,
                                 onPress: () {
@@ -393,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(width: 10),
                               // Add space between SizedBox widgets
                               VehicleCard(
-                                vName: "Auto Rickshaw",
+                                vName: "rickshaw".tr,
                                 image: 'assets/images/auto.png',
                                 height: 110,
                                 onPress: () {
@@ -414,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               VehicleCard(
-                                vName: "e-Rickshaw",
+                                vName: "eRickshaw".tr,
                                 image: 'assets/images/e-rickshaw.jpg',
                                 height: 110,
                                 onPress: () {
@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(width: 10),
                               // Add space between SizedBox widgets
                               VehicleCard(
-                                vName: "Eicher",
+                                vName: "eicher".tr,
                                 image: 'assets/images/eicher.png',
                                 height: 90,
                                 onPress: () {

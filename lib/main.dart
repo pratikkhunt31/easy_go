@@ -1,5 +1,6 @@
 import 'package:easy_go/controller/notification.dart';
 import 'package:easy_go/dataHandler/appData.dart';
+import 'package:easy_go/locale_string.dart';
 import 'package:easy_go/network_dependency.dart';
 import 'package:easy_go/screens/home_view.dart';
 import 'package:easy_go/screens/login/num_screen.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller/location_controller.dart';
 import 'firebase_options.dart';
@@ -24,16 +26,35 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  runApp(const MyApp());
+
+  // Load saved locale
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? languageCode = prefs.getString('languageCode');
+  String? countryCode = prefs.getString('countryCode');
+
+  runApp(MyApp(languageCode: languageCode, countryCode: countryCode));
   DependencyInjection.init();
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? languageCode;
+  final String? countryCode;
+
+  const MyApp({Key? key, this.languageCode, this.countryCode})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Locale? initialLocale;
+    if (languageCode != null) {
+      initialLocale = Locale(languageCode!, countryCode);
+    }
+
     return GetMaterialApp(
+      translations: LocaleString(),
+      locale: initialLocale,
+      fallbackLocale:
+          Locale('en', 'US'), // Default to English if no saved language
       debugShowCheckedModeBanner: false,
       home: AuthRedirect(),
     );
@@ -69,7 +90,7 @@ class _AuthRedirectState extends State<AuthRedirect> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Ensure the column takes only the space it needs
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -81,7 +102,6 @@ class _AuthRedirectState extends State<AuthRedirect> {
                 strokeWidth: 2,
               ),
             ),
-
           ],
         ),
       ),

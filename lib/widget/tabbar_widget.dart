@@ -2,6 +2,7 @@ import 'package:easy_go/screens/booking/cancel.dart';
 import 'package:easy_go/screens/booking/complete.dart';
 import 'package:easy_go/screens/booking/pending.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TabBarWidget extends StatelessWidget {
   const TabBarWidget({super.key});
@@ -15,8 +16,8 @@ class TabBarWidget extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: const Color(0xFF0000FF),
-          title: const Text("Booking"),
-          bottom: const TabBar(
+          title: Text("bookings".tr),
+          bottom:  TabBar(
             indicatorColor: Colors.white,
             indicatorWeight: 2,
             isScrollable: false,
@@ -24,21 +25,21 @@ class TabBarWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  "Pending",
+                  "pending".tr,
                   style: TextStyle(fontSize: 18),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  "Complete",
+                  "complete".tr,
                   style: TextStyle(fontSize: 18),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  "Cancel",
+                  "cancel".tr,
                   style: TextStyle(fontSize: 18),
                 ),
               ),

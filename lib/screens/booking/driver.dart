@@ -131,7 +131,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
         rideRequestRef.remove();
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Driver not assigned. Please make a new request."),
+          content: Text("driverNotAssign".tr),
           backgroundColor: Colors.red,
         ));
       } else {
@@ -268,7 +268,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Driver"),
+          title: Text("driver".tr),
           backgroundColor: const Color(0xFF0000FF),
           elevation: 0,
         ),
@@ -289,10 +289,10 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  Text("Finding a driver..."),
+                  Text("findingADriver".tr),
                   const SizedBox(height: 16.0),
                   Text(
-                    "Time remaining: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}",
+                    "timeRemain: ${remainingTime ~/ 60}:${(remainingTime % 60).toString().padLeft(2, '0')}".tr,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -300,13 +300,13 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                   ),
                   const SizedBox(height: 16.0),
                   CustomButton(
-                    hint: "Cancel Ride",
+                    hint: "cancelRide".tr,
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(10),
                     onPress: () async {
                       await rideRequestRef.remove();
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Ride cancelled successfully"),
+                        content: Text("rideCancelSuccess".tr),
                         backgroundColor: Colors.red,
                       ));
                       Navigator.pop(context);
@@ -314,7 +314,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                   ),
                 ] else ...[
                   Text(
-                    "Driver Details",
+                    "driverDetails".tr,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -323,7 +323,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                   Divider(),
                   const SizedBox(height: 8.0),
                   Text(
-                    "Name: ${driverData!['name'] ?? 'N/A'}",
+                    "name: ${driverData!['name'] ?? 'N/A'}".tr,
                     style: const TextStyle(
                       fontSize: 18,
                       // fontWeight: FontWeight.bold,
@@ -331,7 +331,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                   ),
                   const SizedBox(height: 8.0),
                   CustomButton(
-                    hint: "Proceed to Payment",
+                    hint: "proceedToPayment".tr,
                     color: Color(0xFF0000FF),
                     borderRadius: BorderRadius.circular(10),
                     onPress: () async {
@@ -348,7 +348,7 @@ class _DriverState extends State<Driver> with WidgetsBindingObserver {
                   ),
                   const SizedBox(height: 16.0),
                   CustomButton(
-                    hint: "Cancel Ride",
+                    hint: "cancelRide".tr,
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(10),
                     onPress: () async {

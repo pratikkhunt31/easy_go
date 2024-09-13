@@ -167,10 +167,10 @@ class VehicleCard extends StatelessWidget {
                       )
                     ],
                   ),
-                  const Padding(
+                   Padding(
                     padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
                     child: Text(
-                      'Book for your delivery',
+                      'bookYourDelivery'.tr,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey,

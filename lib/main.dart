@@ -45,11 +45,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Locale? initialLocale;
-    if (languageCode != null) {
-      initialLocale = Locale(languageCode!, countryCode);
-    }
-
+    Locale initialLocale = Locale(languageCode ?? 'en', countryCode ?? 'US');
     return GetMaterialApp(
       translations: LocaleString(),
       locale: initialLocale,
